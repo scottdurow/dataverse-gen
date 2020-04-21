@@ -61,10 +61,19 @@ function init(): void{
   console.log("Initialising project with .cdsify.json");
   const pathToTemplate = path.resolve(packageDir,"../.cdsify.template.json");
   const pathToOutput = path.resolve(packageDir,"../.cdsify.json");
-  fs.copyFileSync(pathToTemplate,pathToOutput);
+  copyFileSync(pathToTemplate,pathToOutput);
 }
 function eject(): void{
-
+  let templateRoot = config.output?.templateRoot || "./_templates";
+  console.log(`Ejecting templates to template root ${templateRoot}`);
+  
+  const source = path.resolve(packageDir,"../_templates");
+  const target = path.resolve(projectDir,templateRoot);
+  if (source == target)
+  {
+    throw new Error("Template source is the same as the target");
+  }
+  copyFolderRecursiveSync(source,target);
 }
 
 async function generate() :Promise<void> {
@@ -104,6 +113,39 @@ async function generate() :Promise<void> {
    console.log(`Using server: ${server}`);
    const codeGenerator = new TypescriptGenerator(packageDir, projectDir, config);
    await codeGenerator.generate("https://" + server);
+}
+function copyFileSync( source: string, target: string ): void {
+  var targetFile = target;
+  //if target is a directory a new file with the same name will be created
+  if ( fs.existsSync( target ) ) {
+      if ( fs.lstatSync( target ).isDirectory() ) {
+          targetFile = path.join( target, path.basename( source ) );
+      }
+  }
+  fs.writeFileSync(targetFile, fs.readFileSync(source));
+}
+
+function copyFolderRecursiveSync( source: string, target: string ) : void {
+  var files = [];
+
+  //check if folder needs to be created or integrated
+  var targetFolder = path.join( target, path.basename( source ) );
+  if ( !fs.existsSync( targetFolder ) ) {
+      fs.mkdirSync( targetFolder );
+  }
+
+  //copy
+  if ( fs.lstatSync( source ).isDirectory() ) {
+      files = fs.readdirSync( source );
+      files.forEach( function ( file ) {
+          var curSource = path.join( source, file );
+          if ( fs.lstatSync( curSource ).isDirectory() ) {
+              copyFolderRecursiveSync( curSource, targetFolder );
+          } else {
+              copyFileSync( curSource, targetFolder );
+          }
+      } );
+  }
 }
 
 main().then(

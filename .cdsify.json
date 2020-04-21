@@ -3,6 +3,7 @@
     "actions":[],
     "functions":["RetrieveMetadataChanges"],
     "output":{
+        "templateRoot": "./_templates",
         "outputRoot": "./src/cds-generated"
     }
 }
