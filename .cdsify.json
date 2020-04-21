@@ -1,0 +1,8 @@
+{
+    "entities":[],
+    "actions":[],
+    "functions":["RetrieveMetadataChanges"],
+    "output":{
+        "outputRoot": "./src/cds-generated"
+    }
+}

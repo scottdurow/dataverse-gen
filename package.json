@@ -1,0 +1,39 @@
+{
+  "name": "cdsify-gen",
+  "version": "1.0.0",
+  "description": "Earlybound types generator for cdsify",
+  "main": "index.js",
+  "bin": {
+    "cdsify-gen": "lib/index.js"
+  },
+  "scripts": {
+    "build": "genversion --es6 --semi src/version.ts & tsc",
+    "prepublish": "genversion --es6 --semi src/version.ts & tsc",
+    "start": "tsc & node lib/index.js -s org.crm11.dynamics.com",
+    "start-help": "tsc & node lib/index.js help",
+    "start-init": "tsc & node lib/index.js init",
+    "start-eject": "tsc & node lib/index.js eject",
+    "test": "tsc & jest",
+    "genversion": "genversion"
+  },
+  "author": "Scott Durow",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.0.0",
+    "ejs": "^3.0.2",
+    "inquirer": "^7.1.0",
+    "lodash.merge": "^4.6.2",
+    "minimist": "^1.2.5",
+    "node-cds-auth": "^1.0.6",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.0.2",
+    "@types/inquirer": "^6.5.0",
+    "@types/lodash.merge": "^4.6.6",
+    "@types/minimist": "^1.2.0",
+    "@types/node": "^13.13.1",
+    "@types/xrm": "^9.0.23",
+    "genversion": "^2.2.1"
+  }
+}

@@ -1,0 +1,8 @@
+{
+    "entities":["account","contact"],
+    "actions":["WinOpportunity"],
+    "functions":["RetrieveMetadataChanges"],
+    "output":{
+        "outputRoot": "./src/cds-generated"
+    }
+}
