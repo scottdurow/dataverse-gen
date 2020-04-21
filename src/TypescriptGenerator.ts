@@ -54,7 +54,7 @@ export class TypescriptGenerator {
     this.outputActions(schema);
     this.outputFunctions(schema);
     this.outputComplexTypes(schema);
-    this.outputFiles("metadata.esj", ".", [{ ...schema, ...this.options }], function() {
+    this.outputFiles("metadata.ejs", ".", [{ ...schema, ...this.options }], function() {
       return "metadata";
     });
   }
