@@ -27,10 +27,8 @@ export const metadataCache = {
   <%_ Actions.forEach(function(e){_%>
     <%-e.Name%>: <%-e.Name%>Metadata,
   <%_})_%>
-  },
-  functions: {
   <%_ Functions.forEach(function(e){_%>
     <%-e.Name%>: <%-e.Name%>Metadata,
   <%_})_%>
-  },
+  }
 };

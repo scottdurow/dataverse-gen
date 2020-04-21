@@ -3,10 +3,10 @@ import _merge = require("lodash.merge");
 import ejs = require("ejs");
 import path = require("path");
 import * as fs from "fs";
-import { WebApiStatic, NodeWebApiRequest} from "cdsify/lib/cdsnode";
+import { WebApiStatic, NodeWebApiRequest } from "cdsify/lib/cdsnode";
 import { SchemaGenerator } from "./SchemaGenerator";
-import { getAccessToken } from "node-cds-auth/dist/TokenCache";
 import { XrmContextCdsServiceClient, setMetadataCache } from "cdsify";
+import { getAccessToken } from "cdsify/lib/cdsnode/TokenCache";
 import { metadataCache } from "./cds-generated/metadata";
 import { ComplexEntityMetadata } from "./cds-generated/complextypes/ComplexEntityMetadata";
 import { RetrieveMetadataChangesResponse } from "./cds-generated/complextypes/RetrieveMetadataChangesResponse";
@@ -82,8 +82,10 @@ export class TypescriptGenerator {
       const response = await this.getEntityMetadata(entity, this.cdsService);
       if (!response.EntityMetadata) throw new Error("No metadata response");
       metadataResponse = response.EntityMetadata[0];
-      // Save to file cache
-      fs.writeFileSync(entityMetadataFile, JSON.stringify(metadataResponse));
+      if (this.options.output?.useCache) {
+        // Save to file cache
+        fs.writeFileSync(entityMetadataFile, JSON.stringify(metadataResponse));
+      }
     }
     return metadataResponse;
   }
@@ -91,6 +93,7 @@ export class TypescriptGenerator {
     logicalName: string,
     cdsService: XrmContextCdsServiceClient,
   ): Promise<RetrieveMetadataChangesResponse> {
+    console.log(`Fetching CDS metadata for ${logicalName}`);
     const metadataQuery = {
       logicalName: "RetrieveMetadataChanges",
       Query: {
@@ -138,6 +141,7 @@ export class TypescriptGenerator {
   }
 
   async getEdmxMetadata(server: string): Promise<string> {
+    console.log("Fetching EDMX metadata");
     const edmxCachePath = path.resolve(".") + "\\cds-edmx.xml";
     let edmxString: string;
     if (this.options.output?.useCache && fs.existsSync(edmxCachePath)) {
@@ -147,7 +151,9 @@ export class TypescriptGenerator {
       const metadataUrl = server + "/api/data/v9.0/$metadata";
       const request = new NodeWebApiRequest(accessToken);
       edmxString = (await request.send("GET", metadataUrl)) as string;
-      fs.writeFileSync(edmxCachePath, edmxString);
+      if (this.options.output?.useCache) {
+        fs.writeFileSync(edmxCachePath, edmxString);
+      }
     }
     return edmxString;
   }

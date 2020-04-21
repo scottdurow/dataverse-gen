@@ -10,8 +10,6 @@ export const metadataCache = {
   entities: {
   },
   actions: {
-  },
-  functions: {
     RetrieveMetadataChanges: RetrieveMetadataChangesMetadata,
-  },
+  }
 };
