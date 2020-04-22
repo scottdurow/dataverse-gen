@@ -22,3 +22,5 @@ If you would rather install cdsify-gen globally you can use:\
 This will then allow you to simply use:\
 `~$ node-cds-auth`\
 `~$ cdsify-gen`
+
+For more information see the [cdsify project](https://github.com/scottdurow/cdsify/wiki)
