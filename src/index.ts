@@ -210,7 +210,7 @@ async function generate(server?: string): Promise<void> {
 async function selectServer(): Promise<string | undefined> {
   // Pick the auth server to use
   const authConfig = loadTokenCache();
-  console.log(chalk.blue("Run 'npx node cds-auth' to add a new CDS envrionment"));
+  console.log(chalk.blue("Run 'npx node-cds-auth' to add a new CDS envrionment"));
   let i = 1;
   const serverNames: string[] = [];
   for (const server in authConfig) {
