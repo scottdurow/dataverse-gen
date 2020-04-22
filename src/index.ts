@@ -84,8 +84,8 @@ async function init(): Promise<void> {
   const server = await selectServer();
   if (server) {
     // Load EDMX
-    const generate = new TypescriptGenerator(packageDir, projectDir, {});
-    const metadataXml = await generate.getEdmxMetadata("https://" + server);
+    const generator = new TypescriptGenerator(packageDir, projectDir, {});
+    const metadataXml = await generator.getEdmxMetadata("https://" + server);
     const schema = new SchemaGenerator(metadataXml);
     schema.readEntityTypes();
     schema.readActions();
@@ -176,6 +176,15 @@ async function init(): Promise<void> {
     } else {
       console.log(chalk.yellow("No items added to configuration"));
     }
+
+    const generateResponse = (await Enquirer.prompt({
+      name: "generate",
+      type: "confirm",
+      message: "Would you like to generate the types now?",
+    } as any)) as any;
+    if (generateResponse.generate) {
+      await generate(server);
+    }
   }
 }
 
@@ -190,11 +199,11 @@ function eject(): void {
   fs.copySync(source, target);
 }
 
-async function generate(): Promise<void> {
+async function generate(server?: string): Promise<void> {
   const codeGenerator = new TypescriptGenerator(packageDir, projectDir, config);
-  const server = await selectServer();
-  if (server) {
-    await codeGenerator.generate("https://" + server);
+  const selectedServer = server || (await selectServer());
+  if (selectedServer) {
+    await codeGenerator.generate("https://" + selectedServer);
   }
 }
 
