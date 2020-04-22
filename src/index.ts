@@ -238,7 +238,7 @@ async function selectServer(): Promise<string | undefined> {
     },
   } as any)) as any;
 
-  const server = serverNames[prompt.number as number];
+  const server = serverNames[(prompt.number as number) - 1];
   console.log(`Using server: ${server}`);
   return server;
 }
