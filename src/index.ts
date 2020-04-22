@@ -14,7 +14,7 @@ import { SchemaGenerator } from "./SchemaGenerator";
 // Load config
 const projectDir = path.resolve(".");
 const packageDir = path.resolve(__dirname);
-const config: CdsifyOptions = readConfig();
+let config: CdsifyOptions = readConfig();
 
 console.log(
   chalk.yellow(`
@@ -183,6 +183,7 @@ async function init(): Promise<void> {
       message: "Would you like to generate the types now?",
     } as any)) as any;
     if (generateResponse.generate) {
+      config = currentConfig;
       await generate(server);
     }
   }
