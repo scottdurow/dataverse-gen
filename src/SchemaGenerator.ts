@@ -287,6 +287,7 @@ export class SchemaGenerator {
         return "PrimitiveType";
       case StructuralProperty.EnumerationType:
         return "EnumerationType";
+      case StructuralProperty.ComplexType:
       case StructuralProperty.EntityType:
         return "EntityType";
       case StructuralProperty.PrimitiveType:
