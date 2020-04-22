@@ -8,7 +8,7 @@ export const RetrieveMetadataChangesMetadata = {
   parameterTypes: {
     "Query": {
       typeName: "mscrm.EntityQueryExpression",
-      structuralProperty: StructuralProperty.PrimitiveType
+      structuralProperty: StructuralProperty.EntityType
       },		
       "DeletedMetadataFilters": {
       typeName: "mscrm.DeletedMetadataFilters",
