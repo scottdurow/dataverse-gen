@@ -26,6 +26,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/lib/index.js",
+            "args": ["init"],
             "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
                 "${workspaceFolder}/lib/**/*.js"

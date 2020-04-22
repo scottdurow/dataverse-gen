@@ -12,7 +12,7 @@ import {
   FunctionParameterType,
   EnumMember,
 } from "./EdmxTypes";
-import {Dictionary, StructuralProperty} from "cdsify";
+import { Dictionary, StructuralProperty } from "cdsify";
 import { TypeScriptType, TypeScriptTypes } from "./TypeScriptType";
 import { CdsifyOptions } from "./MetadataGeneratorConfig";
 import { ComplexEntityMetadata } from "./cds-generated/complextypes/ComplexEntityMetadata";
@@ -31,13 +31,13 @@ export class SchemaGenerator {
   Metadata!: { [key: string]: any };
   _entityTypeIndex: Dictionary<EntityType> = {};
   _enums: Dictionary<EnumType> = {};
-  _loadWebApiMetadata: (logicalName: string) => Promise<ComplexEntityMetadata>;
+  _loadWebApiMetadata?: (logicalName: string) => Promise<ComplexEntityMetadata>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _metadataJson: any;
   constructor(
     schemaXml: string,
-    options: CdsifyOptions,
-    loadWebApiMetadata: (logicalName: string) => Promise<ComplexEntityMetadata>,
+    options: CdsifyOptions = {},
+    loadWebApiMetadata?: (logicalName: string) => Promise<ComplexEntityMetadata>,
   ) {
     this.options = options;
     this._loadWebApiMetadata = loadWebApiMetadata;
@@ -107,9 +107,9 @@ export class SchemaGenerator {
 
   async addEntityMetadata(): Promise<void> {
     for (const entity of this.EntityTypes) {
+      if (!this._loadWebApiMetadata) throw new Error("loadWebApiMetadata callback not set");
       const entityMetadata = await this._loadWebApiMetadata(entity.Name);
-      if (!entityMetadata.LogicalName)
-        continue;
+      if (!entityMetadata.LogicalName) continue;
       const entityType = this._entityTypeIndex[entityMetadata.LogicalName];
 
       // Set the additional properties that are not available in the edmx
@@ -118,8 +118,7 @@ export class SchemaGenerator {
 
       // Re-add the properties with all the information required (not in the emdx)
       entityType.Properties = [];
-      if (!entityMetadata.Attributes)
-        continue;
+      if (!entityMetadata.Attributes) continue;
 
       for (const attribute of entityMetadata.Attributes.filter(
         a => a.AttributeTypeName?.Value != "VirtualType",
@@ -148,7 +147,7 @@ export class SchemaGenerator {
               if (relatedNav && relatedNav.length > 0) {
                 const firstNav = relatedNav[0];
                 firstNav.Type = (lookup.Targets as string[]).join(",");
-                firstNav.FullName = attribute.LogicalName as string
+                firstNav.FullName = attribute.LogicalName as string;
                 firstNav.Name = this.getNavigationName(firstNav.FullName);
 
                 // Remove all the but the grouped navigation property

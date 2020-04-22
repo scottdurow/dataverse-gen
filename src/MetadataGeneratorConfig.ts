@@ -1,4 +1,4 @@
-import {Dictionary} from "cdsify";
+import { Dictionary } from "cdsify";
 
 export interface OutputConfig {
   templateRoot?: string;

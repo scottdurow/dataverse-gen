@@ -5,10 +5,12 @@ import * as fs from "fs-extra";
 import * as chalk from "chalk";
 import { CdsifyOptions } from "./MetadataGeneratorConfig";
 import { TypescriptGenerator } from "./TypescriptGenerator";
-import * as inquirer from "inquirer";
 import { loadTokenCache } from "cdsify/lib/cdsnode/TokenCache";
 import { version } from "./version";
 import * as minimist from "minimist";
+import * as Enquirer from "enquirer";
+import { SchemaGenerator } from "./SchemaGenerator";
+
 // Load config
 const projectDir = path.resolve(".");
 const packageDir = path.resolve(__dirname);
@@ -39,6 +41,10 @@ function readConfig(): CdsifyOptions {
   }
 }
 
+function saveCofig(config: CdsifyOptions): void {
+  const configPath = path.join(projectDir, ".cdsify.json");
+  fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+}
 async function main(): Promise<void> {
   const args = minimist(process.argv.slice(2));
   // Check command arg
@@ -50,7 +56,7 @@ async function main(): Promise<void> {
       help();
       break;
     case "init":
-      init();
+      await init();
       break;
     case "eject":
       eject();
@@ -65,12 +71,114 @@ function help(): void {
   console.log("  cdsify-gen init  : Adds .cdsify.json config file to your project");
   console.log("  cdsify-gen eject : Adds the templates to your project to allow you to customise them!");
 }
-function init(): void {
+async function init(): Promise<void> {
   const pathToTemplate = path.resolve(packageDir, "../.cdsify.template.json");
   const pathToOutput = path.resolve(projectDir, ".cdsify.json");
-  console.log(`Initialising project with: ${pathToOutput}`);
-  fs.copyFileSync(pathToTemplate, pathToOutput);
+  if (!fs.existsSync(pathToOutput)) {
+    console.log(`Initialising project with: ${pathToOutput}`);
+    fs.copyFileSync(pathToTemplate, pathToOutput);
+  } else {
+    console.log(`cdsify config already added: ${pathToOutput}`);
+  }
+
+  const server = await selectServer();
+  if (server) {
+    // Load EDMX
+    const generate = new TypescriptGenerator(packageDir, projectDir, {});
+    const metadataXml = await generate.getEdmxMetadata("https://" + server);
+    const schema = new SchemaGenerator(metadataXml);
+    schema.readEntityTypes();
+    schema.readActions();
+    schema.readFunctions();
+    const entities = schema.EntityTypes.map(e => e.Name);
+    const actions = schema.Actions.map(e => e.Name);
+    const functions = schema.Functions.map(e => e.Name);
+
+    const questionInfo = "[type to filter list, space to select]";
+    const footerMessage = chalk.whiteBright("[Space - Select] [Return Accept] [Scroll up and down to see more]");
+    // Ask for entities
+    const responses = (await Enquirer.prompt([
+      {
+        name: "entities",
+        type: "autocomplete",
+        message: "Select entities to include " + questionInfo,
+        multiple: true,
+        limit: 10,
+        footer() {
+          return footerMessage;
+        },
+        choices: entities,
+      } as any,
+      {
+        name: "actions",
+        type: "autocomplete",
+        message: "Select actions to include " + questionInfo,
+        multiple: true,
+        limit: 10,
+        footer() {
+          return footerMessage;
+        },
+        choices: actions,
+      } as any,
+      {
+        name: "functions",
+        type: "autocomplete",
+        message: "Select functions to include " + questionInfo,
+        multiple: true,
+        limit: 10,
+        footer() {
+          return footerMessage;
+        },
+        choices: functions,
+      } as any,
+    ])) as any;
+
+    // Load config
+    const currentConfig = readConfig();
+    currentConfig.entities = currentConfig.entities || [];
+    currentConfig.actions = currentConfig.actions || [];
+    currentConfig.functions = currentConfig.functions || [];
+
+    const updates = {
+      entities: 0,
+      actions: 0,
+      functions: 0,
+    };
+    // Set entities
+    for (const entity of responses.entities) {
+      if (currentConfig.entities.indexOf(entity) == -1) {
+        currentConfig.entities.push(entity);
+        updates.entities++;
+      }
+    }
+    // Set actions
+    for (const action of responses.actions) {
+      if (currentConfig.actions.indexOf(action) == -1) {
+        currentConfig.actions.push(action);
+        updates.actions++;
+      }
+    }
+    // Set functions
+    for (const functionItem of responses.functions) {
+      if (currentConfig.functions.indexOf(functionItem) == -1) {
+        currentConfig.functions.push(functionItem);
+        updates.functions++;
+      }
+    }
+
+    if (updates.entities + updates.actions + updates.functions > 0) {
+      // Save config
+      saveCofig(currentConfig);
+      console.log(chalk.green("\n\nConfiguration updated:"));
+      console.log(`${chalk.cyanBright(updates.entities)} entities(s) added`);
+      console.log(`${chalk.cyanBright(updates.actions)} actions(s) added`);
+      console.log(`${chalk.cyanBright(updates.functions)} functions(s) added`);
+    } else {
+      console.log(chalk.yellow("No items added to configuration"));
+    }
+  }
 }
+
 function eject(): void {
   const templateRoot = config.output?.templateRoot || "./_templates";
   const source = path.resolve(packageDir, "../_templates");
@@ -83,9 +191,17 @@ function eject(): void {
 }
 
 async function generate(): Promise<void> {
+  const codeGenerator = new TypescriptGenerator(packageDir, projectDir, config);
+  const server = await selectServer();
+  if (server) {
+    await codeGenerator.generate("https://" + server);
+  }
+}
+
+async function selectServer(): Promise<string | undefined> {
   // Pick the auth server to use
   const authConfig = loadTokenCache();
-  console.log("Run 'npx cds-auth' to add a new CDS envrionment");
+  console.log(chalk.blue("Run 'npx node cds-auth' to add a new CDS envrionment"));
   let i = 1;
   const serverNames: string[] = [];
   for (const server in authConfig) {
@@ -95,39 +211,38 @@ async function generate(): Promise<void> {
   }
   if (i == 1) {
     console.log("No server auth tokens found.");
-    return;
+    return undefined;
   }
-
-  const selectServer = [
-    {
-      name: "server",
-      type: "input",
-      message: "Select the server to connect to:",
-      validate: function(value: string): boolean | string {
-        const valueNumber = parseInt(value);
-        if (valueNumber && valueNumber != NaN && valueNumber < i && valueNumber > 0) {
-          return true;
-        } else {
-          return "Please select a server";
-        }
-      },
+  const prompt = (await Enquirer.prompt({
+    name: "number",
+    style: "number",
+    type: "numeral",
+    min: 1,
+    max: serverNames.length,
+    round: 0,
+    message: "Select server to connect to",
+    validate(value: number) {
+      if (value < 1 || value > serverNames.length) {
+        return chalk.red(`Please select a value between 1 and ${serverNames.length}`);
+      }
+      return true;
     },
-  ];
-  const selectServerResponse = await inquirer.prompt(selectServer);
-  const serverIndex = selectServerResponse["server"] as string;
-  const server = serverNames[parseInt(serverIndex) - 1];
+  } as any)) as any;
+
+  const server = serverNames[prompt.number as number];
   console.log(`Using server: ${server}`);
-  const codeGenerator = new TypescriptGenerator(packageDir, projectDir, config);
-  await codeGenerator.generate("https://" + server);
+  return server;
 }
 
 main().then(
   () => {
-    console.log("Complete!");
+    console.log(chalk.green("\nComplete!"));
   },
   ex => {
-    console.log(chalk.red(`Error:${ex.message}`));
-    console.log(`Stack:${ex.stack}`);
-    console.log(JSON.stringify(ex));
+    if (ex.message) {
+      console.log(chalk.red(`\nError:${ex.message}`));
+      console.log(`Stack:${ex.stack}`);
+      console.log(JSON.stringify(ex));
+    }
   },
 );

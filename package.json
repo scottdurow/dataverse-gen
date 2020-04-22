@@ -1,6 +1,6 @@
 {
   "name": "cdsify-gen",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Earlybound types generator for cdsify",
   "main": "index.js",
   "bin": {
@@ -22,8 +22,8 @@
     "cdsify": "^1.0.0",
     "chalk": "^4.0.0",
     "ejs": "^3.0.2",
+    "enquirer": "^2.3.5",
     "fs-extra": "^9.0.0",
-    "inquirer": "^7.1.0",
     "lodash.merge": "^4.6.2",
     "minimist": "^1.2.5",
     "xml-js": "^1.6.11"
