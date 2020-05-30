@@ -13,7 +13,7 @@
     "start-init": "tsc & node lib/index.js init",
     "start-eject": "tsc & node lib/index.js eject",
     "build": "tsc",
-    "test": "tsc & jest",
+    "test": "tsc & jest --passWithNoTests",
     "preversion": "npm test",
     "version": "npm run build",
     "postversion": "genversion --es6 --semi src/version.ts & git push",
