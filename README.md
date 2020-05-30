@@ -5,9 +5,9 @@ Creates early bound TypeScript interfaces to work with `cdsify`.
 ## Usage
 
 1.  Add authentication for your CDS Environment:\
-`~$ npx node-cds-gen [tennant] [environment]`\
+`~$ npx node-cds-auth [tennant] [environment]`\
 E.g.\
-`~$ npx node-cds-gen contoso.onmicrosoft.com contosoorg.crm.dynamics.com`
+`~$ npx node-cds-auth contoso.onmicrosoft.com contosoorg.crm.dynamics.com`
 
 1. Initialise cdsify to create .cdsify.json config file:\
 `~$ npx cdsify-gen init`
@@ -22,3 +22,5 @@ If you would rather install cdsify-gen globally you can use:\
 This will then allow you to simply use:\
 `~$ node-cds-auth`\
 `~$ cdsify-gen`
+
+For more information see the [cdsify project](https://github.com/scottdurow/cdsify/wiki)
