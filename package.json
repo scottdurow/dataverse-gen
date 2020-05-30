@@ -16,7 +16,7 @@
     "test": "tsc & jest --passWithNoTests",
     "preversion": "npm test",
     "version": "npm run build",
-    "postversion": "genversion --es6 --semi src/version.ts & git add . & git push",
+    "postversion": "genversion --es6 --semi src/version.ts & git add . & git commit -m 'Version bump' & git push",
     "genversion": "genversion",
     "prepublishOnly": "npm version patch"
   },
