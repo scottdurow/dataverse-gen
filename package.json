@@ -8,17 +8,17 @@
     "cdsify-gen": "lib/index.js"
   },
   "scripts": {
-    "preversion": "npm test",
-    "version": "npm run build",
-    "postversion": "git push",
-    "build": "genversion --es6 --semi src/version.ts & tsc",
     "start": "tsc & node lib/index.js -s org.crm11.dynamics.com",
     "start-help": "tsc & node lib/index.js help",
     "start-init": "tsc & node lib/index.js init",
     "start-eject": "tsc & node lib/index.js eject",
+    "build": "tsc",
     "test": "tsc & jest",
+    "preversion": "npm test",
+    "version": "npm run build",
+    "postversion": "genversion --es6 --semi src/version.ts & git push",
     "genversion": "genversion",
-    "prepublishOnly": "npm version patch & genversion --es6 --semi src/version.ts & tsc"
+    "prepublishOnly": "npm version patch"
   },
   "author": "Scott Durow",
   "license": "MIT",
