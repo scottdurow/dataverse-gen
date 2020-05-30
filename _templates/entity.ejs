@@ -38,6 +38,6 @@ export enum <%- locals.SchemaName %>Attributes {
 export interface <%- locals.SchemaName ? locals.SchemaName : Name %> extends <%-referencedTypes["Entity"].name%> {
 <%locals.Properties && locals.Properties.forEach(function(property){ _%>
   // <%- property.DisplayName ? property.DisplayName : "" %><%- property.IsRequired == true ? " [Required]" : "" %><%- property.Type ? (" " + property.Type) : "" %><%- property.Description ? (" " + property.Description) :"" %><%- property.Format ? (" " + property.Format) : "" %>
-  <%- property.Name %>?: <%-property.TypescriptType.importLocation && `import("${property.TypescriptType.importLocation}").`%><%- property.TypescriptType.name %>;
+  <%- property.Name %>?: <%-property.TypescriptType.importLocation && `import("${property.TypescriptType.importLocation}").`%><%- property.TypescriptType.name %><%- property.IsRequired == true ? "" : " | null" %>;
 <%})_%>
 }
