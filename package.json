@@ -1,6 +1,6 @@
 {
   "name": "cdsify-gen",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Earlybound types generator for cdsify",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
