@@ -734,6 +734,10 @@ export class SchemaGenerator {
         StringMembers: true,
         Members: [],
       } as EnumType;
+      // If only one item, make array
+      if (item.Member.length == undefined) {
+        item.Member = [item.Member];
+      }
       for (const member of item.Member) {
         const memberDef = {
           Name: member._attributes["Name"],
