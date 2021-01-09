@@ -1,26 +1,26 @@
-# cdsify-gen
+# dataverse-gen
 
-Creates early bound TypeScript interfaces to work with `cdsify`.
+Creates early bound TypeScript interfaces to work with `dataverse-ify`.
 
 ## Usage
 
-1.  Add authentication for your CDS Environment:\
-`~$ npx node-cds-auth [tennant] [environment]`\
+1.  Add authentication for your Microsoft Dataverse Environment:\
+`~$ npx dataverse-auth [environment]`\
 E.g.\
-`~$ npx node-cds-auth contoso.onmicrosoft.com contosoorg.crm.dynamics.com`
+`~$ npx dataverse-auth contosoorg.crm.dynamics.com`
 
-1. Initialise cdsify to create .cdsify.json config file:\
-`~$ npx cdsify-gen init`
+1. Initialise dataverse-ify to create .dataverse-gen.json config file:\
+`~$ npx dataverse-gen init`
 
 1. At any time, you can re-generate the early bound types using:\
-`~$ npx cdsify-gen`
+`~$ npx dataverse-gen`
 
 ## Installing Globally
-If you would rather install cdsify-gen globally you can use:\
-`~$ npm install -g cdsify-gen node-cds-auth`
+If you would rather install dataverse-gen globally you can use:\
+`~$ npm install -g dataverse-gen dataverse-auth`
 
 This will then allow you to simply use:\
-`~$ node-cds-auth`\
-`~$ cdsify-gen`
+`~$ dataverse-auth`\
+`~$ dataverse-gen`
 
-For more information see the [cdsify project](https://github.com/scottdurow/cdsify/wiki)
+For more information see the [dataverse-ify project](https://github.com/scottdurow/dataverse-ify/wiki)

@@ -1,11 +1,11 @@
 {
-  "name": "cdsify-gen",
+  "name": "dataverse-gen",
   "version": "1.0.13",
-  "description": "Earlybound types generator for cdsify",
+  "description": "Earlybound types generator for dataverse-ify",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "bin": {
-    "cdsify-gen": "lib/index.js"
+    "dataverse-gen": "lib/index.js"
   },
   "scripts": {
     "start": "tsc & node lib/index.js -s org.crm11.dynamics.com",

@@ -14,12 +14,12 @@ import {
 } from "./EdmxTypes";
 import { Dictionary, StructuralProperty } from "cdsify";
 import { TypeScriptType, TypeScriptTypes } from "./TypeScriptType";
-import { CdsifyOptions } from "./MetadataGeneratorConfig";
-import { ComplexEntityMetadata } from "./cds-generated/complextypes/ComplexEntityMetadata";
-import { AttributeRequiredLevel } from "./cds-generated/enums/AttributeRequiredLevel";
+import { DataverseGenOptions } from "./MetadataGeneratorConfig";
+import { ComplexEntityMetadata } from "./dataverse-gen/complextypes/ComplexEntityMetadata";
+import { AttributeRequiredLevel } from "./dataverse-gen/enums/AttributeRequiredLevel";
 
 export class SchemaGenerator {
-  options: CdsifyOptions = {};
+  options: DataverseGenOptions = {};
   EntityTypes: EntityType[] = [];
   EntitySet: EntitySet[] = [];
   ComplexTypes: ComplexType[] = [];
@@ -36,7 +36,7 @@ export class SchemaGenerator {
   private _metadataJson: any;
   constructor(
     schemaXml: string,
-    options: CdsifyOptions = {},
+    options: DataverseGenOptions = {},
     loadWebApiMetadata?: (logicalName: string) => Promise<ComplexEntityMetadata>,
   ) {
     this.options = options;

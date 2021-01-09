@@ -3,6 +3,6 @@
     "actions":[],
     "functions":[],
     "output":{
-        "outputRoot": "./src/cds-generated"
+        "outputRoot": "./src/dataverse-gen"
     }
 }

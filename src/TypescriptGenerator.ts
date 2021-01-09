@@ -1,4 +1,4 @@
-import { CdsifyOptions, defaultOptions } from "./MetadataGeneratorConfig";
+import { DataverseGenOptions, defaultOptions } from "./MetadataGeneratorConfig";
 import _merge = require("lodash.merge");
 import ejs = require("ejs");
 import path = require("path");
@@ -7,22 +7,22 @@ import { WebApiStatic, NodeWebApiRequest } from "cdsify/lib/cdsnode";
 import { SchemaGenerator } from "./SchemaGenerator";
 import { XrmContextCdsServiceClient, setMetadataCache } from "cdsify";
 import { getAccessToken } from "cdsify/lib/cdsnode/TokenCache";
-import { metadataCache } from "./cds-generated/metadata";
-import { ComplexEntityMetadata } from "./cds-generated/complextypes/ComplexEntityMetadata";
-import { RetrieveMetadataChangesResponse } from "./cds-generated/complextypes/RetrieveMetadataChangesResponse";
-import { MetadataConditionOperator } from "./cds-generated/enums/MetadataConditionOperator";
-import { LogicalOperator } from "./cds-generated/enums/LogicalOperator";
-import { RetrieveMetadataChangesRequest } from "./cds-generated/functions/RetrieveMetadataChanges";
+import { metadataCache } from "./dataverse-gen/metadata";
+import { ComplexEntityMetadata } from "./dataverse-gen/complextypes/ComplexEntityMetadata";
+import { RetrieveMetadataChangesResponse } from "./dataverse-gen/complextypes/RetrieveMetadataChangesResponse";
+import { MetadataConditionOperator } from "./dataverse-gen/enums/MetadataConditionOperator";
+import { LogicalOperator } from "./dataverse-gen/enums/LogicalOperator";
+import { RetrieveMetadataChangesRequest } from "./dataverse-gen/functions/RetrieveMetadataChanges";
 
 export class TypescriptGenerator {
   packageDir: string;
   projectDir: string;
-  options: CdsifyOptions;
+  options: DataverseGenOptions;
   cdsService!: XrmContextCdsServiceClient;
-  constructor(packageDir: string, projectDir: string, options: CdsifyOptions) {
+  constructor(packageDir: string, projectDir: string, options: DataverseGenOptions) {
     this.packageDir = packageDir;
     this.projectDir = projectDir;
-    this.options = _merge(defaultOptions, options) as CdsifyOptions;
+    this.options = _merge(defaultOptions, options) as DataverseGenOptions;
   }
 
   async generate(server: string): Promise<void> {

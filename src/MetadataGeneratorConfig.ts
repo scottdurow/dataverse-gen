@@ -11,7 +11,7 @@ export interface ImportType {
   import?: string;
 }
 
-export interface CdsifyOptions {
+export interface DataverseGenOptions {
   entities?: string[];
   actions?: string[];
   functions?: string[];
@@ -67,8 +67,8 @@ export const defaultOptions = {
   },
   output: {
     useCache: false,
-    outputRoot: "./src/cds-generated",
+    outputRoot: "./src/dataverse-gen", // Default
     templateRoot: "./_templates",
     fileSuffix: ".ts",
   },
-} as CdsifyOptions;
+} as DataverseGenOptions;
