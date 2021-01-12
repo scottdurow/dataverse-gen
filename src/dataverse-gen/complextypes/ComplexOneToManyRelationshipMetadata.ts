@@ -11,7 +11,7 @@ export interface ComplexOneToManyRelationshipMetadata {
   ReferencedEntityNavigationPropertyName?: string;
   ReferencedEntity?: string;
   ReferencedAttribute?: string;
-  MetadataId?: import("cdsify").Guid;
+  MetadataId?: import("dataverse-ify").Guid;
   IsValidForAdvancedFind?: boolean;
   IsManaged?: boolean;
   IsHierarchical?: boolean;

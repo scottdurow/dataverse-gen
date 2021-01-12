@@ -16,7 +16,7 @@ export interface ComplexEntityMetadata {
   ObjectTypeCode?: number;
   ModifiedOn?: Date;
   MobileOfflineFilters?: string;
-  MetadataId?: import("cdsify").Guid;
+  MetadataId?: import("dataverse-ify").Guid;
   ManyToOneRelationships?: import("../complextypes/ComplexOneToManyRelationshipMetadata").ComplexOneToManyRelationshipMetadata[];
   ManyToManyRelationships?: import("../complextypes/ComplexManyToManyRelationshipMetadata").ComplexManyToManyRelationshipMetadata[];
   LogicalName?: string;
@@ -84,8 +84,8 @@ export interface ComplexEntityMetadata {
   DisplayCollectionName?: import("../complextypes/Label").Label;
   Description?: import("../complextypes/Label").Label;
   DaysSinceRecordLastModified?: number;
-  DataSourceId?: import("cdsify").Guid;
-  DataProviderId?: import("cdsify").Guid;
+  DataSourceId?: import("dataverse-ify").Guid;
+  DataProviderId?: import("dataverse-ify").Guid;
   CreatedOn?: Date;
   CollectionSchemaName?: string;
   ChangeTrackingEnabled?: boolean;

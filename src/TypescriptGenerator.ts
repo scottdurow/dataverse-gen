@@ -3,10 +3,10 @@ import _merge = require("lodash.merge");
 import ejs = require("ejs");
 import path = require("path");
 import * as fs from "fs";
-import { WebApiStatic, NodeWebApiRequest } from "cdsify/lib/cdsnode";
 import { SchemaGenerator } from "./SchemaGenerator";
-import { XrmContextCdsServiceClient, setMetadataCache } from "cdsify";
-import { getAccessToken } from "cdsify/lib/cdsnode/TokenCache";
+import { XrmContextCdsServiceClient, setMetadataCache } from "dataverse-ify";
+import { getAccessToken, WebApiStatic, NodeWebApiRequest } from "dataverse-ify/lib/webapi";
+
 import { metadataCache } from "./dataverse-gen/metadata";
 import { ComplexEntityMetadata } from "./dataverse-gen/complextypes/ComplexEntityMetadata";
 import { RetrieveMetadataChangesResponse } from "./dataverse-gen/complextypes/RetrieveMetadataChangesResponse";
@@ -136,7 +136,7 @@ export class TypescriptGenerator {
       },
     } as RetrieveMetadataChangesRequest;
 
-    const metadataResponse = (await cdsService.execute(metadataQuery)) as RetrieveMetadataChangesResponse;
+    const metadataResponse = (await cdsService.execute(metadataQuery as any)) as RetrieveMetadataChangesResponse;
     return metadataResponse;
   }
 

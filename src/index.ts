@@ -6,7 +6,7 @@ import * as fs from "fs-extra";
 import * as chalk from "chalk";
 import { DataverseGenOptions } from "./MetadataGeneratorConfig";
 import { TypescriptGenerator } from "./TypescriptGenerator";
-import { loadTokenCache } from "cdsify/lib/cdsnode/TokenCache";
+import { loadTokenCache } from "dataverse-ify/lib/xrm-webapi/TokenCache";
 import { version } from "./version";
 import * as minimist from "minimist";
 import * as Enquirer from "enquirer";

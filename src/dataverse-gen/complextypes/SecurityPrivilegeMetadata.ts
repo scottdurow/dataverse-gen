@@ -1,7 +1,7 @@
 /* eslint-disable*/
 export interface SecurityPrivilegeMetadata {
   PrivilegeType?: import("../enums/PrivilegeType").PrivilegeType;
-  PrivilegeId?: import("cdsify").Guid;
+  PrivilegeId?: import("dataverse-ify").Guid;
   Name?: string;
   CanBeParentEntityReference?: boolean;
   CanBeLocal?: boolean;

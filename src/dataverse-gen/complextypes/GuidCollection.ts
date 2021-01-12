@@ -1,4 +1,4 @@
 /* eslint-disable*/
 export interface GuidCollection {
-  Items?: import("cdsify").Guid[];
+  Items?: import("dataverse-ify").Guid[];
 }

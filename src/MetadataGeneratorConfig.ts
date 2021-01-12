@@ -1,4 +1,4 @@
-import { Dictionary } from "cdsify";
+import { Dictionary } from "dataverse-ify";
 
 export interface OutputConfig {
   templateRoot?: string;
@@ -29,31 +29,31 @@ export const defaultOptions = {
     },
     Guid: {
       name: "Guid",
-      import: "cdsify",
+      import: "dataverse-ify",
     },
     Entity: {
       name: "IEntity",
-      import: "cdsify",
+      import: "dataverse-ify",
     },
     EntityReference: {
       name: "EntityReference",
-      import: "cdsify",
+      import: "dataverse-ify",
     },
     WebApiExecuteRequest: {
       name: "WebApiExecuteRequest",
-      import: "cdsify",
+      import: "dataverse-ify",
     },
     StructuralProperty: {
       name: "StructuralProperty",
-      import: "cdsify",
+      import: "dataverse-ify",
     },
     OperationType: {
       name: "OperationType",
-      import: "cdsify",
+      import: "dataverse-ify",
     },
     ActivityParty: {
       name: "ActivityParty",
-      import: "cdsify",
+      import: "dataverse-ify",
     },
     enums: {
       import: "../enums/",

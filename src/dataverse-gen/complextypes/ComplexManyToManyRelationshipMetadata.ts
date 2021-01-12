@@ -3,7 +3,7 @@ export interface ComplexManyToManyRelationshipMetadata {
   SecurityTypes?: import("../enums/SecurityTypes").SecurityTypes;
   SchemaName?: string;
   RelationshipType?: import("../enums/RelationshipType").RelationshipType;
-  MetadataId?: import("cdsify").Guid;
+  MetadataId?: import("dataverse-ify").Guid;
   IsValidForAdvancedFind?: boolean;
   IsManaged?: boolean;
   IsCustomizable?: import("../complextypes/BooleanManagedProperty").BooleanManagedProperty;

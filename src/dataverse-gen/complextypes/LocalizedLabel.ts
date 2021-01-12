@@ -1,6 +1,6 @@
 /* eslint-disable*/
 export interface LocalizedLabel {
-  MetadataId?: import("cdsify").Guid;
+  MetadataId?: import("dataverse-ify").Guid;
   LanguageCode?: number;
   Label?: string;
   IsManaged?: boolean;

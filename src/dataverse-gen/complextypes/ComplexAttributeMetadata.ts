@@ -4,9 +4,9 @@ export interface ComplexAttributeMetadata {
   SchemaName?: string;
   RequiredLevel?: import("../complextypes/AttributeRequiredLevelManagedProperty").AttributeRequiredLevelManagedProperty;
   ModifiedOn?: Date;
-  MetadataId?: import("cdsify").Guid;
+  MetadataId?: import("dataverse-ify").Guid;
   LogicalName?: string;
-  LinkedAttributeId?: import("cdsify").Guid;
+  LinkedAttributeId?: import("dataverse-ify").Guid;
   IsValidForUpdate?: boolean;
   IsValidForRead?: boolean;
   IsValidForGrid?: boolean;

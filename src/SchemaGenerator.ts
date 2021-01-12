@@ -12,7 +12,7 @@ import {
   FunctionParameterType,
   EnumMember,
 } from "./EdmxTypes";
-import { Dictionary, StructuralProperty } from "cdsify";
+import { Dictionary, StructuralProperty } from "dataverse-ify";
 import { TypeScriptType, TypeScriptTypes } from "./TypeScriptType";
 import { DataverseGenOptions } from "./MetadataGeneratorConfig";
 import { ComplexEntityMetadata } from "./dataverse-gen/complextypes/ComplexEntityMetadata";
