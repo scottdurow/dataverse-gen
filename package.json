@@ -1,6 +1,6 @@
 {
   "name": "dataverse-gen",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Earlybound types generator for dataverse-ify",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
