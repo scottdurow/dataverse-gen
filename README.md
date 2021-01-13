@@ -1,6 +1,7 @@
 # dataverse-gen
 
 Creates early bound TypeScript interfaces to work with `dataverse-ify`.
+For more information see the [dataverse-ify project](https://github.com/scottdurow/dataverse-ify/wiki)
 
 ## Usage
 
@@ -24,3 +25,6 @@ This will then allow you to simply use:\
 `~$ dataverse-gen`
 
 For more information see the [dataverse-ify project](https://github.com/scottdurow/dataverse-ify/wiki)
+
+Notes:
+1. Files differ by case only. If you get an error from the imports in the generated types, it is likely that your file names have the wrong case. dataverse-gen will remember re-use the file name if it exsts when generating - even if the casing is different. The solution is to completely remove all your generated files and regenerated them to get the correct casing.
