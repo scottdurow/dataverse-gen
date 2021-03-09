@@ -137,6 +137,11 @@ export class TypescriptGenerator {
     } as RetrieveMetadataChangesRequest;
 
     const metadataResponse = (await cdsService.execute(metadataQuery as any)) as RetrieveMetadataChangesResponse;
+
+    // Sort properties
+    metadataResponse.EntityMetadata?.forEach(m =>
+      m.Attributes?.sort((a, b) => ((a.LogicalName as string) > (b.LogicalName as string) ? 1 : -1)),
+    );
     return metadataResponse;
   }
 

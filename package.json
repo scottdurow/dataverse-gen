@@ -24,7 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^4.1.0",
-    "dataverse-ify": "^1.0.8",
+    "dataverse-ify": "^1.0.9",
     "ejs": "^3.1.5",
     "enquirer": "^2.3.6",
     "fs-extra": "^9.0.1",
