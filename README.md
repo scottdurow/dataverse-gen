@@ -16,6 +16,33 @@ E.g.\
 1. At any time, you can re-generate the early bound types using:\
 `~$ npx dataverse-gen`
 
+## `.dataverse-gen.json`
+The configuration for dataverse-gen is stored in the `.dataverse-gen.json` file. You can edit this manually if you want rather than use `npx dataverse-gen init`.  This is the only file that is needed to run `npx dataverse-gen`.
+
+The standard templates use references to the dataverse-ify types, and so unless you edit the templates (see below) you will need to install these types using:
+
+```shell
+npm install --save dataverse-ify
+```
+## Custom Templates
+If you wanted to just generate Attribute `enum` constants and stop there, you can easily customise the scripts to suit your needs by using:
+
+```shell
+npx dataverse-gen eject
+```
+
+This will create a step of templates ready to customise in the `_templates` folder. Once you have made your updates, just run `npx dataverse-gen` again. The templates use the awesome [ejs](https://ejs.co/) project. E.g.
+
+```typescript
+// Attribute constants
+export const enum <%- locals.SchemaName %>Attributes {
+<%locals.Properties && locals.Properties.forEach(function(property){ _%>
+ <%- property.SchemaName %> = "<%- property.Name %>",
+<%})_%>
+}
+```
+
+If you wanted to revert back to the standard templates, just delete the  `_templates` folder
 ## Installing Globally
 If you would rather install dataverse-gen globally you can use:\
 `~$ npm install -g dataverse-gen dataverse-auth`
