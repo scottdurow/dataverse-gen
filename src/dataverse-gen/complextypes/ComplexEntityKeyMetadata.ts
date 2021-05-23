@@ -1,7 +1,7 @@
 /* eslint-disable*/
 export interface ComplexEntityKeyMetadata {
   SchemaName?: string;
-  MetadataId?: import("cdsify").Guid;
+  MetadataId?: import("dataverse-ify").Guid;
   LogicalName?: string;
   KeyAttributes?: string[];
   IsSynchronous?: boolean;

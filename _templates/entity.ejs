@@ -28,7 +28,7 @@ export const <%- Name %>Metadata = {
 };
 
 // Attribute constants
-export enum <%- locals.SchemaName %>Attributes {
+export const enum <%- locals.SchemaName %>Attributes {
 <%locals.Properties && locals.Properties.forEach(function(property){ _%>
   <%- property.SchemaName %> = "<%- property.Name %>",
 <%})_%>

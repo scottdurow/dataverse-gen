@@ -12,14 +12,14 @@ import {
   FunctionParameterType,
   EnumMember,
 } from "./EdmxTypes";
-import { Dictionary, StructuralProperty } from "cdsify";
+import { Dictionary, StructuralProperty } from "dataverse-ify";
 import { TypeScriptType, TypeScriptTypes } from "./TypeScriptType";
-import { CdsifyOptions } from "./MetadataGeneratorConfig";
-import { ComplexEntityMetadata } from "./cds-generated/complextypes/ComplexEntityMetadata";
-import { AttributeRequiredLevel } from "./cds-generated/enums/AttributeRequiredLevel";
+import { DataverseGenOptions } from "./MetadataGeneratorConfig";
+import { ComplexEntityMetadata } from "./dataverse-gen/complextypes/ComplexEntityMetadata";
+import { AttributeRequiredLevel } from "./dataverse-gen/enums/AttributeRequiredLevel";
 
 export class SchemaGenerator {
-  options: CdsifyOptions = {};
+  options: DataverseGenOptions = {};
   EntityTypes: EntityType[] = [];
   EntitySet: EntitySet[] = [];
   ComplexTypes: ComplexType[] = [];
@@ -36,7 +36,7 @@ export class SchemaGenerator {
   private _metadataJson: any;
   constructor(
     schemaXml: string,
-    options: CdsifyOptions = {},
+    options: DataverseGenOptions = {},
     loadWebApiMetadata?: (logicalName: string) => Promise<ComplexEntityMetadata>,
   ) {
     this.options = options;
@@ -141,7 +141,7 @@ export class SchemaGenerator {
             const lookup = attribute as any;
 
             if (lookup.Targets.length > 0) {
-              const relatedNav = entityType.NavigationProperties.filter(a =>
+              const relatedNav = entityType.NavigationProperties.filter((a: { Name: string }) =>
                 a.Name.startsWith(attribute.LogicalName + "_"),
               );
               if (relatedNav && relatedNav.length > 0) {
@@ -703,6 +703,7 @@ export class SchemaGenerator {
       } as EntitySet;
       this.EntitySet.push(entityset);
     }
+    this.EntitySet.sort((a, b) => (a.Name > b.Name ? 1 : -1));
   }
 
   readComplexTypes(): void {
@@ -722,6 +723,7 @@ export class SchemaGenerator {
       complexType.NavigationProperties = this.getNavigation(item);
       this.ComplexTypes.push(complexType);
     }
+    this.ComplexTypes.sort((a, b) => (a.Name > b.Name ? 1 : -1));
   }
 
   readEnums(): void {
@@ -747,6 +749,7 @@ export class SchemaGenerator {
       }
 
       this.EnumTypes.push(enumType);
+      this.EnumTypes.sort((a, b) => (a.Name > b.Name ? 1 : -1));
     }
   }
 
@@ -761,6 +764,7 @@ export class SchemaGenerator {
       functionItem.NavigationProperties = this.getNavigation(item);
       this.Functions.push(functionItem);
     }
+    this.Functions.sort((a, b) => (a.Name > b.Name ? 1 : -1));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -804,6 +808,7 @@ export class SchemaGenerator {
       action.NavigationProperties = this.getNavigation(item);
       this.Actions.push(action);
     }
+    this.Actions.sort((a, b) => (a.Name > b.Name ? 1 : -1));
   }
 
   readEntityTypes(): void {
@@ -826,6 +831,7 @@ export class SchemaGenerator {
       this.EntityTypes.push(entityType);
       this._entityTypeIndex[entityType.Name] = entityType;
     }
+    this.EntityTypes.sort((a, b) => (a.Name > b.Name ? 1 : -1));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

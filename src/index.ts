@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-use-before-define */
+process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
 import * as path from "path";
 import * as fs from "fs-extra";
 import * as chalk from "chalk";
-import { CdsifyOptions } from "./MetadataGeneratorConfig";
+import { DataverseGenOptions } from "./MetadataGeneratorConfig";
 import { TypescriptGenerator } from "./TypescriptGenerator";
-import { loadTokenCache } from "cdsify/lib/cdsnode/TokenCache";
+import { loadTokenCache } from "dataverse-ify/lib/xrm-webapi/TokenCache";
 import { version } from "./version";
 import * as minimist from "minimist";
 import * as Enquirer from "enquirer";
@@ -14,35 +15,35 @@ import { SchemaGenerator } from "./SchemaGenerator";
 // Load config
 const projectDir = path.resolve(".");
 const packageDir = path.resolve(__dirname);
-let config: CdsifyOptions = readConfig();
+let config: DataverseGenOptions = readConfig();
 
 console.log(
   chalk.yellow(`
-          _     _  __        __  
-   ___ __| |___(_)/ _|_   _  \\ \\ 
-  / __/ _' / __| | |_| | | |  \\ \\
- | (_| (_| \\__ \\ |  _| |_| |  / /
-  \\___\\__,_|___/_|_|  \\__, | /_/ 
-                      |___/      
+       __      __                                        _ ____     
+  ____/ /___ _/ /_____ __   _____  _____________        (_) __/_  __
+ / __  / __ \`/ __/ __ \`/ | / / _ \\/ ___/ ___/ _ \\______/ / /_/ / / /
+/ /_/ / /_/ / /_/ /_/ /| |/ /  __/ /  (__  )  __/_____/ / __/ /_/ / 
+\\__,_/\\__,_/\\__/\\__,_/ |___/\\___/_/  /____/\\___/     /_/_/  \\__, /  
+                                                           /____/   
 `),
 );
-console.log(`cdsify-gen v${version}`);
+console.log(`dataverse-gen v${version}`);
 console.log(chalk.gray("Running from package:" + packageDir));
 console.log(chalk.gray("Current Project: " + projectDir));
 
-function readConfig(): CdsifyOptions {
-  const configPath = path.join(projectDir, ".cdsify.json");
+function readConfig(): DataverseGenOptions {
+  const configPath = path.join(projectDir, ".dataverse-gen.json");
   if (fs.existsSync(configPath)) {
     const configJSON = fs.readFileSync(configPath).toString();
-    const config: CdsifyOptions = JSON.parse(configJSON) as CdsifyOptions;
+    const config: DataverseGenOptions = JSON.parse(configJSON) as DataverseGenOptions;
     return config;
   } else {
-    return {} as CdsifyOptions;
+    return {} as DataverseGenOptions;
   }
 }
 
-function saveCofig(config: CdsifyOptions): void {
-  const configPath = path.join(projectDir, ".cdsify.json");
+function saveCofig(config: DataverseGenOptions): void {
+  const configPath = path.join(projectDir, ".dataverse-gen.json");
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 }
 async function main(): Promise<void> {
@@ -68,17 +69,17 @@ async function main(): Promise<void> {
 }
 
 function help(): void {
-  console.log("  cdsify-gen init  : Adds .cdsify.json config file to your project");
-  console.log("  cdsify-gen eject : Adds the templates to your project to allow you to customise them!");
+  console.log("  dataverse-gen init  : Adds .dataverse-gen.json config file to your project");
+  console.log("  dataverse-gen eject : Adds the templates to your project to allow you to customise them!");
 }
 async function init(): Promise<void> {
-  const pathToTemplate = path.resolve(packageDir, "../.cdsify.template.json");
-  const pathToOutput = path.resolve(projectDir, ".cdsify.json");
+  const pathToTemplate = path.resolve(packageDir, "../.dataverse-gen.template.json");
+  const pathToOutput = path.resolve(projectDir, ".dataverse-gen.json");
   if (!fs.existsSync(pathToOutput)) {
     console.log(`Initialising project with: ${pathToOutput}`);
     fs.copyFileSync(pathToTemplate, pathToOutput);
   } else {
-    console.log(`cdsify config already added: ${pathToOutput}`);
+    console.log(`dataverse-gen.json config already added: ${pathToOutput}`);
   }
 
   const server = await selectServer();
@@ -211,7 +212,7 @@ async function generate(server?: string): Promise<void> {
 async function selectServer(): Promise<string | undefined> {
   // Pick the auth server to use
   const authConfig = loadTokenCache();
-  console.log(chalk.blue("Run 'npx node-cds-auth' to add a new CDS envrionment"));
+  console.log(chalk.blue("Run 'npx dataverse-auth' to add a new Microsoft Dataverse envrionment"));
   let i = 1;
   const serverNames: string[] = [];
   for (const server in authConfig) {

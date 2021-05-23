@@ -3,9 +3,10 @@ export interface ComplexAttributeMetadata {
   SourceType?: number;
   SchemaName?: string;
   RequiredLevel?: import("../complextypes/AttributeRequiredLevelManagedProperty").AttributeRequiredLevelManagedProperty;
-  MetadataId?: import("cdsify").Guid;
+  ModifiedOn?: Date;
+  MetadataId?: import("dataverse-ify").Guid;
   LogicalName?: string;
-  LinkedAttributeId?: import("cdsify").Guid;
+  LinkedAttributeId?: import("dataverse-ify").Guid;
   IsValidForUpdate?: boolean;
   IsValidForRead?: boolean;
   IsValidForGrid?: boolean;
@@ -36,6 +37,7 @@ export interface ComplexAttributeMetadata {
   DisplayName?: import("../complextypes/Label").Label;
   Description?: import("../complextypes/Label").Label;
   DeprecatedVersion?: string;
+  CreatedOn?: Date;
   ColumnNumber?: number;
   CanModifyAdditionalSettings?: import("../complextypes/BooleanManagedProperty").BooleanManagedProperty;
   CanBeSecuredForUpdate?: boolean;

@@ -1,6 +1,6 @@
 /* eslint-disable*/
 export interface AssociatedMenuConfiguration {
-  ViewId?: import("cdsify").Guid;
+  ViewId?: import("dataverse-ify").Guid;
   QueryApi?: string;
   Order?: number;
   MenuId?: string;

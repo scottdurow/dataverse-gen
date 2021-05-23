@@ -1,7 +1,7 @@
 /* eslint-disable*/
-import { WebApiExecuteRequest } from "cdsify";
-import { StructuralProperty } from "cdsify";
-import { OperationType } from "cdsify";
+import { WebApiExecuteRequest } from "dataverse-ify";
+import { StructuralProperty } from "dataverse-ify";
+import { OperationType } from "dataverse-ify";
 
 // Action RetrieveMetadataChanges
 export const RetrieveMetadataChangesMetadata = {
@@ -36,6 +36,6 @@ export interface RetrieveMetadataChangesRequest extends WebApiExecuteRequest {
   Query?: import("../complextypes/EntityQueryExpression").EntityQueryExpression;
   DeletedMetadataFilters?: import("../enums/DeletedMetadataFilters").DeletedMetadataFilters;
   ClientVersionStamp?: string;
-  AppModuleId?: import("cdsify").Guid;
+  AppModuleId?: import("dataverse-ify").Guid;
   RetrieveAllSettings?: boolean;
 }
