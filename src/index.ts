@@ -216,7 +216,9 @@ async function generate(server?: string): Promise<void> {
     await metadataService.authorize("https://" + selectedServer);
     const codeWriter = new FileSystemCodeWriter(config);
     const templateProvider = new FileSystemTemplateProvider(config);
-    const codeGenerator = new TypescriptGenerator(metadataService, codeWriter, templateProvider, config);
+    const model = new SchemaModel(metadataService, config);
+    await model.generate();
+    const codeGenerator = new TypescriptGenerator(model, codeWriter, templateProvider, config);
     await codeGenerator.generate();
   }
 }

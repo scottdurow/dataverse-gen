@@ -1,6 +1,6 @@
 nodewebapi:
  proxy:
-  useproxy: true
+  useproxy: false
   httpProxy: http://127.0.0.1:8888
   httpsProxy: http://127.0.0.1:8888
  server:

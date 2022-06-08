@@ -17,8 +17,12 @@ export class DataverseMetadataService implements MetadataService {
   client: DataverseClient | undefined;
   server: string | undefined;
   accessToken: string | undefined;
-
+  entityMetadataCache: Record<string, RetrieveMetadataChangesResponse> = {};
+  edmx: string | undefined;
   async authorize(server: string) {
+    // Clear cache
+    this.edmx = undefined;
+    this.entityMetadataCache = {};
     this.server = server;
     this.accessToken = await acquireToken(server.replace("https://", ""));
     const nodeWebApi = new WebApiStatic(this.accessToken, server);
@@ -29,6 +33,7 @@ export class DataverseMetadataService implements MetadataService {
   }
 
   async getEntityMetadata(logicalName: string): Promise<RetrieveMetadataChangesResponse> {
+    if (this.entityMetadataCache[logicalName]) return this.entityMetadataCache[logicalName];
     if (!this.client) throw "Not initialized";
     console.log(`Fetching Dataverse metadata for ${logicalName}`);
     const metadataQuery = {
@@ -79,10 +84,12 @@ export class DataverseMetadataService implements MetadataService {
     metadataResponse.EntityMetadata?.forEach((m) =>
       m.Attributes?.sort((a, b) => ((a.LogicalName as string) > (b.LogicalName as string) ? 1 : -1)),
     );
+    this.entityMetadataCache[logicalName] = metadataResponse;
     return metadataResponse;
   }
 
   async getEdmxMetadata(useCache?: boolean): Promise<string> {
+    if (this.edmx) return this.edmx;
     console.log("Fetching EDMX metadata");
     const edmxCachePath = path.resolve(".") + "\\cds-edmx.xml";
     let edmxString: string;
@@ -96,6 +103,7 @@ export class DataverseMetadataService implements MetadataService {
         fs.writeFileSync(edmxCachePath, edmxString);
       }
     }
+    this.edmx = edmxString;
     return edmxString;
   }
 }

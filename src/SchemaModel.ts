@@ -14,12 +14,12 @@ import {
 } from "./EdmxTypes";
 import { Dictionary, StructuralProperty } from "dataverse-ify";
 import { TypeScriptType, TypeScriptTypes } from "./TypeScriptType";
-import { DataverseGenOptions } from "./MetadataGeneratorConfig";
+import { DataverseGenOptions, defaultOptions } from "./MetadataGeneratorConfig";
 import { ComplexEntityMetadata } from "./dataverse-gen/complextypes/ComplexEntityMetadata";
 import { MetadataService } from "./MetadataService";
 import { ComplexAttributeMetadata } from "./dataverse-gen/complextypes/ComplexAttributeMetadata";
 import { AttributeRequiredLevel } from "./dataverse-gen/enums/AttributeRequiredLevel";
-
+import _merge = require("lodash.merge");
 export class SchemaModel {
   options: DataverseGenOptions = {};
   EntityTypes: EntityType[] = [];
@@ -30,12 +30,12 @@ export class SchemaModel {
   Functions: FunctionType[] = [];
   Actions: ActionType[] = [];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Metadata!: { [key: string]: any };
+  private Metadata!: { [key: string]: any };
   private entityTypeIndex: Dictionary<EntityType> = {};
   private enums: Dictionary<EnumType> = {};
   private metadataService: MetadataService;
   constructor(metadataService: MetadataService, options: DataverseGenOptions = {}) {
-    this.options = options;
+    this.options = _merge(defaultOptions, options) as DataverseGenOptions;
     this.metadataService = metadataService;
   }
 
@@ -787,7 +787,7 @@ export class SchemaModel {
       }
 
       this.EnumTypes.push(enumType);
-      this.EnumTypes.sort((a, b) => (a.Name > b.Name ? 1 : -1));
+      this.EnumTypes.sort((a, b) => (Number.parseInt(a.Value as string) > Number.parseInt(b.Value as string) ? 1 : -1));
     }
   }
 
@@ -889,7 +889,7 @@ export class SchemaModel {
         properties.push(propertyItem);
       }
       // Order by name
-      properties = properties.sort((a, b) => (a.Name > b.Name ? -1 : 1));
+      properties = properties.sort((a, b) => (a.Name > b.Name ? 1 : -1));
     }
     return properties;
   }
@@ -915,7 +915,7 @@ export class SchemaModel {
         navigation.push(navItem);
       }
       // Order by name
-      navigation = navigation.sort((a, b) => (a.Name > b.Name ? -1 : 1));
+      navigation = navigation.sort((a, b) => (a.Name > b.Name ? 1 : -1));
     }
     return navigation;
   }

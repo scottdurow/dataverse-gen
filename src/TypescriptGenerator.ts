@@ -3,22 +3,21 @@ import _merge = require("lodash.merge");
 import ejs = require("ejs");
 import path = require("path");
 import { SchemaModel } from "./SchemaModel";
-import { MetadataService } from "./MetadataService";
 import { CodeWriter } from "./CodeWriter";
 import { TemplateProvider } from "./TemplateProvider";
 
 export class TypescriptGenerator {
   options: DataverseGenOptions;
-  metadataService: MetadataService;
+  model: SchemaModel;
   codeWriter: CodeWriter;
   templateProvider: TemplateProvider;
   constructor(
-    metadataService: MetadataService,
+    model: SchemaModel,
     codeWriter: CodeWriter,
     templateProvider: TemplateProvider,
     options: DataverseGenOptions,
   ) {
-    this.metadataService = metadataService;
+    this.model = model;
     this.codeWriter = codeWriter;
     this.templateProvider = templateProvider;
     this.options = _merge(defaultOptions, options) as DataverseGenOptions;
@@ -29,14 +28,12 @@ export class TypescriptGenerator {
     if (!this.options.output?.templateRoot) throw new Error("Missing templateRoot in config");
     if (!this.options.output?.outputRoot) throw new Error("Missing outputRoot in config");
 
-    const schema = new SchemaModel(this.metadataService, this.options);
-    await schema.generate();
-    this.outputEntities(schema);
-    this.outputEnums(schema);
-    this.outputActions(schema);
-    this.outputFunctions(schema);
-    this.outputComplexTypes(schema);
-    this.outputFiles("metadata.ejs", ".", [{ ...schema, ...this.options }], function () {
+    this.outputEntities(this.model);
+    this.outputEnums(this.model);
+    this.outputActions(this.model);
+    this.outputFunctions(this.model);
+    this.outputComplexTypes(this.model);
+    this.outputFiles("metadata.ejs", ".", [{ ...this.model, ...this.options }], function () {
       return "metadata";
     });
   }
@@ -87,7 +84,11 @@ export class TypescriptGenerator {
       try {
         console.log("Generating: " + outFile);
         const template = this.templateProvider.getTemplate(templateFileName);
-        output = ejs.render(template, { ...this.options, ...item });
+        if (template) {
+          output = ejs.render(template, { ...this.options, ...item });
+        } else {
+          console.warn(`Skipping - no template found '${templateFileName}'`);
+        }
       } catch (ex) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const error = ex as any;
