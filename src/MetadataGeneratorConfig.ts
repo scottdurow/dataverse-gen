@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import { Dictionary } from "dataverse-ify";
 
 export interface OutputConfig {

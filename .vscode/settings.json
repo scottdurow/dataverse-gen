@@ -1,5 +1,29 @@
 {
     "cSpell.enableFiletypes": [
         "markdown"
+    ],
+    "cSpell.ignoreWords": [
+        "complextypes",
+        "webapi"
+    ],
+    "cSpell.words": [
+        "authorise",
+        "camelcase",
+        "complextype",
+        "crmbaseentity",
+        "crmmodelbaseentity",
+        "cryptr",
+        "Durow",
+        "EDMX",
+        "emdx",
+        "expando",
+        "genversion",
+        "Msal",
+        "mscrm",
+        "nodewebapi",
+        "Picklist",
+        "postversion",
+        "preversion",
+        "Uniqueidentifier"
     ]
 }
