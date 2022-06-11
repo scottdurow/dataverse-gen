@@ -13,7 +13,8 @@ describe("MetadataService", () => {
     const server = configFile.server?.host as string;
     await service.authorize(server);
     const edmx = await service.getEdmxMetadata();
-    fs.writeFileSync(path.join(projectDir, "src/__tests__/data/edmx.xml"), edmx);
+    expect(edmx).toBeDefined();
+    //fs.writeFileSync(path.join(projectDir, "src/__tests__/data/edmx.xml"), edmx);
   }, 1000000);
 
   it("downloads entity metadata", async () => {
@@ -31,10 +32,11 @@ describe("MetadataService", () => {
     fs.writeFileSync(path.join(projectDir, "src/__tests__/data/opportunity-metadata.json"), JSON.stringify(metadata2));
 
     const metadata3 = await service.getEntityMetadata("opportunityclose");
+    expect(metadata3).toBeDefined();
     metadata3.ServerVersionStamp = undefined;
-    fs.writeFileSync(
-      path.join(projectDir, "src/__tests__/data/opportunityclose-metadata.json"),
-      JSON.stringify(metadata3),
-    );
+    // fs.writeFileSync(
+    //   path.join(projectDir, "src/__tests__/data/opportunityclose-metadata.json"),
+    //   JSON.stringify(metadata3),
+    // );
   }, 1000000);
 });
