@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
 import * as chalk from "chalk";
-import { getAllUsers } from "dataverse-ify/lib/webapi";
+import { getAllUsers } from "dataverse-ify/lib/webapi/node/MsalAuth";
 import * as Enquirer from "enquirer";
 import * as fs from "fs-extra";
 import * as minimist from "minimist";
@@ -290,7 +290,7 @@ async function main(): Promise<void> {
       eject();
       break;
     default:
-      await generate();
+      await generate(args.s);
       break;
   }
 }

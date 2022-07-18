@@ -8,7 +8,7 @@
     "dataverse-gen": "lib/index.js"
   },
   "scripts": {
-    "start": "tsc & node lib/index.js -s",
+    "start": "tsc & node lib/index.js",
     "start-help": "tsc & node lib/index.js help",
     "start-init": "tsc & node lib/index.js init",
     "start-eject": "tsc & node lib/index.js eject",

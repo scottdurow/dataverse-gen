@@ -1,6 +1,6 @@
 import { RetrieveMetadataChangesResponse } from "./dataverse-gen/complextypes/RetrieveMetadataChangesResponse";
 import { DataverseClient, setMetadataCache, XrmContextDataverseClient } from "dataverse-ify";
-import { acquireToken, NodeWebApiRequest, WebApiStatic } from "dataverse-ify/lib/webapi";
+import { NodeWebApi } from "dataverse-ify/lib/webapi/node";
 import * as fs from "fs";
 import path = require("path");
 import { RetrieveMetadataChangesRequest } from "./dataverse-gen/functions/RetrieveMetadataChanges";
@@ -19,15 +19,16 @@ export class DataverseMetadataService implements MetadataService {
   accessToken: string | undefined;
   entityMetadataCache: Record<string, RetrieveMetadataChangesResponse> = {};
   edmx: string | undefined;
+  webApi?: NodeWebApi;
   async authorize(server: string) {
     // Clear cache
     this.edmx = undefined;
     this.entityMetadataCache = {};
     this.server = server;
-    this.accessToken = await acquireToken(server.replace("https://", ""));
-    const nodeWebApi = new WebApiStatic(this.accessToken, server);
+    this.webApi = new NodeWebApi(server);
+    await this.webApi.authorize();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.client = new XrmContextDataverseClient(nodeWebApi as any as Xrm.WebApi);
+    this.client = new XrmContextDataverseClient(this.webApi as any as Xrm.WebApi);
     // Set Metadata
     setMetadataCache(metadataCache);
   }
@@ -97,8 +98,12 @@ export class DataverseMetadataService implements MetadataService {
       edmxString = fs.readFileSync(edmxCachePath).toString();
     } else {
       const metadataUrl = this.server + "/api/data/v9.0/$metadata";
-      const request = new NodeWebApiRequest(this.accessToken);
-      edmxString = (await request.send("GET", metadataUrl)) as string;
+      if (this.webApi) {
+        const request = this.webApi.requestImplementation;
+        edmxString = (await request.send("GET", metadataUrl, {})).body as string;
+      } else {
+        throw "webapi authorize not called";
+      }
       if (useCache) {
         fs.writeFileSync(edmxCachePath, edmxString);
       }
