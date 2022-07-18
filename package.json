@@ -27,7 +27,7 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "config": "^3.3.7",
-    "dataverse-ify": "^2.0.1",
+    "dataverse-ify": "^2.0.2",
     "ejs": "^3.1.5",
     "enquirer": "^2.3.6",
     "fs-extra": "^9.0.1",

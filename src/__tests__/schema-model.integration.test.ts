@@ -1,5 +1,5 @@
 import config = require("config");
-import { NodeXrmConfig } from "dataverse-ify/lib/webapi/config/NodeXrmConfig";
+import { NodeXrmConfig } from "dataverse-ify/lib/webapi/node/config/NodeXrmConfig";
 import { DataverseMetadataService } from "../MetadataService";
 import { SchemaModel } from "../SchemaModel";
 
