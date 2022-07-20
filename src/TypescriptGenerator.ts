@@ -20,7 +20,8 @@ export class TypescriptGenerator {
     this.model = model;
     this.codeWriter = codeWriter;
     this.templateProvider = templateProvider;
-    this.options = _merge(defaultOptions, options) as DataverseGenOptions;
+    this.options = {};
+    _merge(this.options, options, defaultOptions);
   }
 
   async generate(): Promise<void> {

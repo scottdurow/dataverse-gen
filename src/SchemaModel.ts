@@ -35,7 +35,8 @@ export class SchemaModel {
   private enums: Dictionary<EnumType> = {};
   private metadataService: MetadataService;
   constructor(metadataService: MetadataService, options: DataverseGenOptions = {}) {
-    this.options = _merge(defaultOptions, options) as DataverseGenOptions;
+    this.options = {};
+    _merge(this.options, defaultOptions, options);
     this.metadataService = metadataService;
   }
 
@@ -454,6 +455,7 @@ export class SchemaModel {
         type = "Guid";
         break;
       case "ImageType":
+      case "FileType":
       case "Edm.String":
       case "StringType":
       case "Edm.Duration":

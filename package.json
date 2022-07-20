@@ -13,7 +13,8 @@
     "start-init": "tsc & node lib/index.js init",
     "start-eject": "tsc & node lib/index.js eject",
     "build": "tsc",
-    "test": "tsc & jest",
+    "test": "tsc & jest unit",
+    "integration-test": "tsc & jest integration",
     "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix",
     "coverage": "jest --coverage",
@@ -27,7 +28,7 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "config": "^3.3.7",
-    "dataverse-ify": "^2.0.2",
+    "dataverse-ify": "^2.0.3",
     "ejs": "^3.1.5",
     "enquirer": "^2.3.6",
     "fs-extra": "^9.0.1",
