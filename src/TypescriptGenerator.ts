@@ -21,7 +21,7 @@ export class TypescriptGenerator {
     this.codeWriter = codeWriter;
     this.templateProvider = templateProvider;
     this.options = {};
-    _merge(this.options, options, defaultOptions);
+    _merge(this.options, defaultOptions, options);
   }
 
   async generate(): Promise<void> {
