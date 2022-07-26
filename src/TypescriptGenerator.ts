@@ -57,6 +57,9 @@ export class TypescriptGenerator {
     this.outputFiles("metadata.ejs", ".", [{ ...schema, ...this.options }], function() {
       return "metadata";
     });
+    this.outputFiles("index.ejs", ".", [{ ...schema, ...this.options }], function() {
+      return "index";
+    });
   }
 
   createDir(dirPath: string): void {
