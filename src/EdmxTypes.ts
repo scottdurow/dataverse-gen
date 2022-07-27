@@ -22,6 +22,7 @@ export interface EntityTypeProperty {
 }
 
 export interface EntityTypeNavigationProperty {
+  TypescriptType?: TypeScriptType;
   LogicalName: string;
   FullName: string;
   Type: string;

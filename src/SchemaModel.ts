@@ -20,6 +20,7 @@ import { MetadataService } from "./MetadataService";
 import { ComplexAttributeMetadata } from "./dataverse-gen/complextypes/ComplexAttributeMetadata";
 import { AttributeRequiredLevel } from "./dataverse-gen/enums/AttributeRequiredLevel";
 import _merge = require("lodash.merge");
+
 export class SchemaModel {
   options: DataverseGenOptions = {};
   EntityTypes: EntityType[] = [];
@@ -74,6 +75,12 @@ export class SchemaModel {
     for (const item of this.ComplexTypes) {
       for (const param of item.Properties) {
         param.TypescriptType = this.getTypeScriptType(param);
+      }
+
+      for (const param of item.NavigationProperties) {
+        param.TypescriptType = this.getTypeScriptType({
+          Type: param.IsCollection ? `Collection(${param.Type})` : param.Type,
+        });
       }
     }
     for (const item of this.Actions) {
@@ -239,65 +246,6 @@ export class SchemaModel {
     }
   }
 
-  private getParameterTypeScriptType(param: FunctionParameterType): TypeScriptType[] | undefined {
-    let typeName: string;
-    let outputType: TypeScriptTypes = TypeScriptTypes.primitive;
-    let structuralType = this.getStructuralType(param);
-    switch (param.Type) {
-      case "Edm.Guid":
-        typeName = "Guid";
-        break;
-      case "Edm.String":
-      case "Edm.Duration":
-      case "Edm.Binary":
-        typeName = "string";
-        break;
-      case "Edm.Int16":
-      case "Edm.Int32":
-      case "Edm.Int64":
-      case "Edm.Double":
-      case "Edm.Decimal":
-        typeName = "number";
-        break;
-      case "Edm.Boolean":
-        typeName = "boolean";
-        break;
-      case "Edm.DateTimeOffset":
-        typeName = "Date";
-        break;
-      default: {
-        typeName = this.lastValue(param.Type.split("."));
-        typeName = this.trimEnd(typeName, ")");
-        if (typeName === "crmbaseentity") {
-          typeName = "any";
-          break;
-        } else {
-          // If complex type - it could still be an entity
-          if (
-            structuralType === StructuralProperty.ComplexType &&
-            this.EntityTypes.find((a) => a.Name.toLowerCase() === typeName.toLowerCase())
-          ) {
-            structuralType = StructuralProperty.EntityType;
-          }
-          ({ outputType, typeName } = this.getOutputType(structuralType, typeName));
-        }
-        break;
-      }
-    }
-
-    const outputTypes: TypeScriptType[] = [];
-    for (const item of typeName.split("|")) {
-      const typeItem = {
-        name: item,
-        outputType: outputType,
-        importLocation: this.resolveTypeToImportLocation(item, outputType),
-      } as TypeScriptType;
-      outputTypes.push(typeItem);
-      param.structuralTypeName = this.structuralPropertyToString(structuralType);
-    }
-    return outputTypes;
-  }
-
   private getOutputType(structuralType: StructuralProperty, typeName: string) {
     let outputType: TypeScriptTypes;
     switch (structuralType) {
@@ -402,44 +350,76 @@ export class SchemaModel {
     return StructuralProperty.ComplexType;
   }
 
-  private trimEnd(value: string, char: string): string {
-    if (value.endsWith(char)) {
-      value = value.substr(0, value.length - char.length);
+  protected getParameterTypeScriptType(param: FunctionParameterType): TypeScriptType[] | undefined {
+    let typeName = "any";
+    let outputType: TypeScriptTypes = TypeScriptTypes.primitive;
+    let structuralType = this.getStructuralType(param);
+    let paramType = param.Type;
+    if (structuralType === StructuralProperty.Collection) {
+      // Strip the collection
+      paramType = this.removeCollection(param.Type);
     }
-    return value;
+    if (paramType.startsWith("Edm.")) {
+      switch (paramType) {
+        case "Edm.Guid":
+          typeName = "Guid";
+          break;
+        case "Edm.String":
+        case "Edm.Duration":
+        case "Edm.Binary":
+          typeName = "string";
+          break;
+        case "Edm.Int16":
+        case "Edm.Int32":
+        case "Edm.Int64":
+        case "Edm.Double":
+        case "Edm.Decimal":
+          typeName = "number";
+          break;
+        case "Edm.Boolean":
+          typeName = "boolean";
+          break;
+        case "Edm.DateTimeOffset":
+          typeName = "Date";
+          break;
+      }
+    } else {
+      // Complex Type or Entity
+      typeName = this.lastValue(paramType.split("."));
+      if (typeName === "crmbaseentity") {
+        typeName = "any";
+      } else {
+        // If complex type - it could still be an entity
+        if (
+          structuralType === StructuralProperty.ComplexType &&
+          this.EntityTypes.find((a) => a.Name.toLowerCase() === typeName.toLowerCase())
+        ) {
+          structuralType = StructuralProperty.EntityType;
+        }
+        ({ outputType, typeName } = this.getOutputType(structuralType, typeName));
+      }
+    }
+    if (structuralType === StructuralProperty.Collection) typeName += "[]";
+    const outputTypes: TypeScriptType[] = [];
+    for (const item of typeName.split("|")) {
+      const typeItem = {
+        name: item,
+        outputType: outputType,
+        importLocation: this.resolveTypeToImportLocation(item, outputType),
+      } as TypeScriptType;
+      outputTypes.push(typeItem);
+      param.structuralTypeName = this.structuralPropertyToString(structuralType);
+    }
+    return outputTypes;
   }
 
-  private getTypeScriptType(property: EntityTypeProperty): TypeScriptType {
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  private getTypeScriptType(property: { Type: string; IsMultiSelect?: boolean; IsEnum?: boolean }): TypeScriptType {
     const referencedType = property.Type;
     const isMultiSelect = property.IsMultiSelect;
     const isCollection = this.isCollection(referencedType);
     const typeName = this.removeCollection(referencedType);
     let type = "any";
-    /*
-      BigIntType
-      BooleanType
-      CalendarRulesType
-      CustomerType
-      DateTimeType
-      DecimalType
-      DoubleType
-      EntityNameType
-      ImageType
-      IntegerType
-      LookupType
-      ManagedPropertyType
-      MemoType
-      MoneyType
-      MultiSelectPicklistType
-      OwnerType
-      PartyListType
-      PicklistType
-      StateType
-      StatusType
-      StringType
-      UniqueidentifierType
-      VirtualType
-    */
 
     switch (typeName) {
       case "MultiSelectPicklistType":
@@ -502,23 +482,27 @@ export class SchemaModel {
         }
         break;
     }
-
-    // Check if it is an enum
-    const enumType = this.EnumTypes.find((e) => e.Name === type);
-    if (enumType) {
-      property.IsEnum = true;
-    }
-    // E.g. Special case because we don't want an interface called 'Object'
-    type = this.mapTypeName(type);
     let outputType = property.IsEnum ? TypeScriptTypes.enumType : TypeScriptTypes.primitive;
-    // Check if it is an entity type
-    const entityType = this.EntityTypes.find((e) => e.SchemaName === type);
-    if (entityType) {
-      outputType = TypeScriptTypes.entityType;
-    }
-    const complexType = this.ComplexTypes.find((e) => e.Name === type);
-    if (complexType) {
-      outputType = TypeScriptTypes.complexType;
+    if (type === "crmbaseentity") {
+      type = "any";
+    } else {
+      // Check if it is an enum
+      const enumType = this.EnumTypes.find((e) => e.Name === type);
+      if (enumType) {
+        property.IsEnum = true;
+      }
+      // E.g. Special case because we don't want an interface called 'Object'
+      type = this.mapTypeName(type);
+
+      // Check if it is an entity type
+      const entityType = this.EntityTypes.find((e) => e.SchemaName === type || e.Name === type);
+      if (entityType) {
+        outputType = TypeScriptTypes.entityType;
+      }
+      const complexType = this.ComplexTypes.find((e) => e.Name === type);
+      if (complexType) {
+        outputType = TypeScriptTypes.complexType;
+      }
     }
     // Add array
     if (isCollection || isMultiSelect) {
@@ -727,7 +711,7 @@ export class SchemaModel {
     if (typeValue) {
       let typeValueCollection = typeValue.replace("Collection(", "");
       if (typeValueCollection.endsWith(")")) {
-        typeValueCollection = typeValueCollection.substr(0, typeValueCollection.length - 1);
+        typeValueCollection = typeValueCollection.substring(0, typeValueCollection.length - 1);
       }
       return typeValueCollection;
     }

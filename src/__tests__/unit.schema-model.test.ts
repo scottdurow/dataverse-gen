@@ -95,6 +95,16 @@ describe("SchemaModel", () => {
     });
   });
 
+  it("sets complex type navigation properties", () => {
+    const complexType = model.ComplexTypes.find((e) => e.Name === "cdsify_UnboundEchoResponse");
+    const navProperty = complexType?.NavigationProperties.find((p) => p.Name === "cdsify_UnboundOutEntity");
+    expect(navProperty).toMatchObject({
+      IsCollection: false,
+      FullName: "cdsify_UnboundOutEntity",
+      Type: "mscrm.cdsify_integrationtest",
+    });
+  });
+
   it("removes system entities", () => {
     expect(model.EntityTypes.find((e) => e.Name === "expando")).toBeUndefined();
     expect(model.EntityTypes.find((e) => e.Name === "prinicpal")).toBeUndefined();
