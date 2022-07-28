@@ -106,7 +106,7 @@ describe("TypeScriptGenerator", () => {
   });
 });
 
-async function getModel(defaultOptions: {
+export async function getModel(defaultOptions: {
   entities: string[];
   actions: string[];
   functions: string[];

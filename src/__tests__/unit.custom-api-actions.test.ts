@@ -22,7 +22,7 @@ describe("TypeScriptGenerator", () => {
     expect(file).toBeDefined();
 
     expect(file).toMatch(
-      'cdsify_UnboundOutEntity?: import("../entities/cdsify_integrationtest").cdsify_integrationtest;',
+      'cdsify_UnboundOutEntity?: import("../entities/cdsify_IntegrationTest").cdsify_integrationtest;',
     );
     expect(file).toMatch("cdsify_UnboundOutEntityCollection?: any[];");
   });

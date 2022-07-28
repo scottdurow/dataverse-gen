@@ -18,6 +18,7 @@
         "emdx",
         "expando",
         "genversion",
+        "integrationtest",
         "Msal",
         "mscrm",
         "nodewebapi",

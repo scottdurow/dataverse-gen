@@ -297,8 +297,14 @@ export class SchemaModel {
       switch (outputType) {
         case TypeScriptTypes.enumType:
           return this.options.referencedTypes["enums"].import + typeNameImport;
-        case TypeScriptTypes.entityType:
-          return this.options.referencedTypes["entityTypes"].import + typeNameImport;
+        case TypeScriptTypes.entityType: {
+          // The import file name is the schema name of the entity
+          const entity = this.EntityTypes.find((e) => e.SchemaName === typeNameImport || e.Name === typeNameImport);
+          if (!entity || !entity.SchemaName) {
+            throw `Attempting to import referenced entity that is not included or has no SchemaName${typeNameImport}`;
+          }
+          return this.options.referencedTypes["entityTypes"].import + entity.SchemaName;
+        }
         case TypeScriptTypes.complexType:
           return this.options.referencedTypes["complexTypes"].import + typeNameImport;
       }
@@ -490,6 +496,7 @@ export class SchemaModel {
       const enumType = this.EnumTypes.find((e) => e.Name === type);
       if (enumType) {
         property.IsEnum = true;
+        outputType = TypeScriptTypes.enumType;
       }
       // E.g. Special case because we don't want an interface called 'Object'
       type = this.mapTypeName(type);
