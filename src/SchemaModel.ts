@@ -298,12 +298,7 @@ export class SchemaModel {
         case TypeScriptTypes.enumType:
           return this.options.referencedTypes["enums"].import + typeNameImport;
         case TypeScriptTypes.entityType: {
-          // The import file name is the schema name of the entity
-          const entity = this.EntityTypes.find((e) => e.SchemaName === typeNameImport || e.Name === typeNameImport);
-          if (!entity || !entity.SchemaName) {
-            throw `Attempting to import referenced entity that is not included or has no SchemaName${typeNameImport}`;
-          }
-          return this.options.referencedTypes["entityTypes"].import + entity.SchemaName;
+          return this.options.referencedTypes["entityTypes"].import + typeNameImport;
         }
         case TypeScriptTypes.complexType:
           return this.options.referencedTypes["complexTypes"].import + typeNameImport;
@@ -504,6 +499,7 @@ export class SchemaModel {
       // Check if it is an entity type
       const entityType = this.EntityTypes.find((e) => e.SchemaName === type || e.Name === type);
       if (entityType) {
+        type = entityType.SchemaName as string;
         outputType = TypeScriptTypes.entityType;
       }
       const complexType = this.ComplexTypes.find((e) => e.Name === type);
