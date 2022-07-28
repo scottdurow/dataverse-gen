@@ -5,22 +5,26 @@ import path = require("path");
 import { SchemaModel } from "./SchemaModel";
 import { CodeWriter } from "./CodeWriter";
 import { TemplateProvider } from "./TemplateProvider";
+import { DefaultLogger, ILoggerCallback } from "./Logger";
 
 export class TypescriptGenerator {
   options: DataverseGenOptions;
   model: SchemaModel;
   codeWriter: CodeWriter;
   templateProvider: TemplateProvider;
+  logger: ILoggerCallback;
   constructor(
     model: SchemaModel,
     codeWriter: CodeWriter,
     templateProvider: TemplateProvider,
     options: DataverseGenOptions,
+    logger?: ILoggerCallback,
   ) {
     this.model = model;
     this.codeWriter = codeWriter;
     this.templateProvider = templateProvider;
     this.options = {};
+    this.logger = logger || DefaultLogger;
     _merge(this.options, defaultOptions, options);
   }
 
@@ -83,12 +87,12 @@ export class TypescriptGenerator {
       const outFile = path.join(outputDir, `${fileName}${this.options.output?.fileSuffix}`);
       let output = "";
       try {
-        console.log("Generating: " + outFile);
+        this.logger("Generating: " + outFile);
         const template = this.templateProvider.getTemplate(templateFileName);
         if (template) {
           output = ejs.render(template, { ...this.options, ...item });
         } else {
-          console.warn(`Skipping - no template found '${templateFileName}'`);
+          this.logger(`Skipping - no template found '${templateFileName}'`);
         }
       } catch (ex) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

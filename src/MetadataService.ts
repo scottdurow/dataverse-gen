@@ -7,6 +7,7 @@ import { RetrieveMetadataChangesRequest } from "./dataverse-gen/functions/Retrie
 import { MetadataConditionOperator } from "./dataverse-gen/enums/MetadataConditionOperator";
 import { LogicalOperator } from "./dataverse-gen/enums/LogicalOperator";
 import { metadataCache } from "./dataverse-gen/metadata";
+import { DefaultLogger, ILoggerCallback } from "./Logger";
 
 export interface MetadataService {
   getEntityMetadata(logicalName: string): Promise<RetrieveMetadataChangesResponse>;
@@ -20,6 +21,12 @@ export class DataverseMetadataService implements MetadataService {
   entityMetadataCache: Record<string, RetrieveMetadataChangesResponse> = {};
   edmx: string | undefined;
   webApi?: NodeWebApi;
+  logger: ILoggerCallback;
+
+  constructor(logger?: ILoggerCallback) {
+    this.logger = logger || DefaultLogger;
+  }
+
   async authorize(server: string) {
     // Clear cache
     this.edmx = undefined;
@@ -36,7 +43,7 @@ export class DataverseMetadataService implements MetadataService {
   async getEntityMetadata(logicalName: string): Promise<RetrieveMetadataChangesResponse> {
     if (this.entityMetadataCache[logicalName]) return this.entityMetadataCache[logicalName];
     if (!this.client) throw "Not initialized";
-    console.log(`Fetching Dataverse metadata for ${logicalName}`);
+    this.logger(`Fetching Dataverse metadata for ${logicalName}`);
     const metadataQuery = {
       logicalName: "RetrieveMetadataChanges",
       Query: {
@@ -91,7 +98,7 @@ export class DataverseMetadataService implements MetadataService {
 
   async getEdmxMetadata(useCache?: boolean): Promise<string> {
     if (this.edmx) return this.edmx;
-    console.log("Fetching EDMX metadata");
+    this.logger("Fetching EDMX metadata");
     const edmxCachePath = path.resolve(".") + "\\cds-edmx.xml";
     let edmxString: string;
     if (useCache && fs.existsSync(edmxCachePath)) {

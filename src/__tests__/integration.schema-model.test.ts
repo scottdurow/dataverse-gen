@@ -2,13 +2,14 @@ import config = require("config");
 import { NodeXrmConfig } from "dataverse-ify/lib/webapi/node";
 import { DataverseMetadataService } from "../MetadataService";
 import { SchemaModel } from "../SchemaModel";
+import { NoLogging } from "./helpers";
 
 describe("SchemaModel", () => {
   const configFile = config.get("nodewebapi") as NodeXrmConfig;
   let service: DataverseMetadataService;
   beforeAll(async () => {
     const server = configFile.server?.host as string;
-    service = new DataverseMetadataService();
+    service = new DataverseMetadataService(NoLogging);
     await service.authorize(server);
     await service.getEdmxMetadata();
   }, 100000);

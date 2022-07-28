@@ -1,7 +1,4 @@
-import { CodeWriter } from "../CodeWriter";
-import { FileSystemTemplateProvider } from "../TemplateProvider";
-import { TypescriptGenerator } from "../TypescriptGenerator";
-import { getModel } from "./unit.typescript-generator.test";
+import { generateWithModel, getModel } from "./helpers";
 
 describe("resolveTypeToImportLocation", () => {
   it("imports enums in complex types", async () => {
@@ -15,15 +12,7 @@ describe("resolveTypeToImportLocation", () => {
     };
     const model = await getModel(defaultOptions);
 
-    const files: Record<string, string> = {};
-    const codeWriter = {
-      createSubFolder: jest.fn(),
-      write: jest.fn().mockImplementation((path, data) => (files[path] = data)),
-    } as CodeWriter;
-
-    const templateProvider = new FileSystemTemplateProvider(defaultOptions);
-    const codeGenerator = new TypescriptGenerator(model, codeWriter, templateProvider, defaultOptions);
-    await codeGenerator.generate();
+    const files: Record<string, string> = await generateWithModel(defaultOptions, model);
     const file = files["complextypes\\ComplexEntityMetadata.ts"];
     expect(file).toBeDefined();
     expect(file).toMatch(/OwnershipType\?: import\("..\/enums\/OwnershipTypes"\).OwnershipTypes;/);
@@ -33,7 +22,7 @@ describe("resolveTypeToImportLocation", () => {
     expect(unboundEchoResponse).toBeDefined();
     // This test is case sensitive for a reason!
     expect(unboundEchoResponse).toMatch(
-      /cdsify_UnboundOutEntity\?: import\("..\/entities\/cdsify_IntegrationTest"\).cdsify_integrationtest;/,
+      /cdsify_UnboundOutEntity\?: import\("..\/entities\/cdsify_IntegrationTest"\).cdsify_IntegrationTest;/,
     );
   });
 });
