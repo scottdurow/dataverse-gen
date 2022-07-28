@@ -550,6 +550,8 @@ export class SchemaModel {
       }
     }
     if (addEnum) {
+      // Sort members numerically
+      optionSetEnum.Members?.sort((a, b) => (Number.parseInt(a.Value) < Number.parseInt(b.Value) ? -1 : 1));
       this.EnumTypes.push(optionSetEnum);
     }
     return optionSetEnum;

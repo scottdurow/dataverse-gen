@@ -2,6 +2,8 @@ import { MetadataService } from "../MetadataService";
 import { SchemaModel } from "../SchemaModel";
 import * as fs from "fs";
 import * as path from "path";
+import { getModel } from "./helpers";
+import { EnumMember } from "../EdmxTypes";
 describe("SchemaModel", () => {
   let model: SchemaModel;
   beforeAll(async () => {
@@ -19,7 +21,7 @@ describe("SchemaModel", () => {
     // Check single value enums
     expect(model.EnumTypes.find((e) => e.Name === "SolutionOperationType")?.Members).toHaveLength(1);
   });
-  it("sorts enum name/values by value", async () => {
+  it("sorts complex type enum name/values by value", async () => {
     // Check single value enums
     /* 
     <EnumType Name="AccessRights" IsFlags="true">
@@ -43,6 +45,26 @@ describe("SchemaModel", () => {
       expect(accessRightsEnum?.Members[8].Value).toBe("524288");
       expect(accessRightsEnum?.Members[8].Name).toBe("AssignAccess");
     }
+  });
+
+  it("sorts option set enum name/values by value", async () => {
+    const defaultOptions = {
+      entities: ["queueitem"],
+      actions: [],
+      functions: [],
+    };
+    const model = await getModel(defaultOptions);
+
+    const objectTypeCodeEnum = model.EnumTypes.find((e) => e.Name === "queueitem_queueitem_objecttypecode");
+
+    expect(objectTypeCodeEnum).toBeDefined();
+    const sortedEnums = [...(objectTypeCodeEnum?.Members as EnumMember[])].sort((a, b) =>
+      Number.parseInt(a.Value) < Number.parseInt(b.Value) ? -1 : 1,
+    );
+    // Check that the members are correctly sorted
+    const originalOrder = objectTypeCodeEnum?.Members?.map((m) => m.Value).join(",");
+    const sortedOrder = sortedEnums?.map((m) => m.Value).join(",");
+    expect(originalOrder).toBe(sortedOrder);
   });
 
   it("handles single property entities", () => {

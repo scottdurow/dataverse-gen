@@ -46,5 +46,9 @@ describe("MetadataService", () => {
       path.join(projectDir, "src/__tests__/data/cdsify_integrationtest-metadata.json"),
       JSON.stringify(metadata4),
     );
+
+    const metadata5 = await service.getEntityMetadata("queueitem");
+    metadata5.ServerVersionStamp = undefined;
+    fs.writeFileSync(path.join(projectDir, "src/__tests__/data/queueitem-metadata.json"), JSON.stringify(metadata5));
   }, 1000000);
 });

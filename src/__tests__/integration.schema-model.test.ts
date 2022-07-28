@@ -16,7 +16,7 @@ describe("SchemaModel", () => {
 
   it("adds webapi metadata & filters", async () => {
     const model = new SchemaModel(service, {
-      entities: ["account", "opportunity", "cdsify_integrationtest"],
+      entities: ["account", "opportunity", "cdsify_integrationtest", "queueitem"],
       actions: ["WinOpportunity"],
       functions: ["RetrieveMetadataChanges", "WhoAmI"],
       output: {
@@ -24,8 +24,9 @@ describe("SchemaModel", () => {
       },
     });
     await model.generate();
-    expect(model.EntityTypes.length).toBe(4);
+    expect(model.EntityTypes.length).toBe(5);
     expect(model.Actions.length).toBe(1);
     expect(model.Functions.length).toBe(2);
+    expect(model.EnumTypes.length).toBe(65);
   }, 100000);
 });
