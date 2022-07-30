@@ -89,6 +89,9 @@ export class SchemaModel {
       }
       for (const param of item.Parameters) {
         param.TypescriptTypes = this.getParameterTypeScriptType(param);
+        // Special case
+        // For entity/table bound actions, remove the Collection part of the type
+        this.CorrectFunctionActionEntitySetParameter(param);
       }
     }
     for (const item of this.Functions) {
@@ -97,12 +100,21 @@ export class SchemaModel {
       }
       for (const param of item.Parameters) {
         param.TypescriptTypes = this.getParameterTypeScriptType(param);
+        // Special case
+        // For entity/table bound actions, remove the Collection part of the type
+        this.CorrectFunctionActionEntitySetParameter(param);
       }
     }
     for (const item of this.EntityTypes) {
       for (const property of item.Properties) {
         property.TypescriptType = this.getTypeScriptType(property);
       }
+    }
+  }
+
+  private CorrectFunctionActionEntitySetParameter(param: FunctionParameterType) {
+    if (param.Name === "entityset" && param.structuralTypeName === "Collection") {
+      param.Type = this.removeCollection(param.Type);
     }
   }
 
@@ -351,6 +363,7 @@ export class SchemaModel {
     return StructuralProperty.ComplexType;
   }
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   protected getParameterTypeScriptType(param: FunctionParameterType): TypeScriptType[] | undefined {
     let typeName = "any";
     let outputType: TypeScriptTypes = TypeScriptTypes.primitive;
@@ -384,11 +397,13 @@ export class SchemaModel {
           typeName = "Date";
           break;
       }
+      if (structuralType === StructuralProperty.Collection) typeName += "[]";
     } else {
       // Complex Type or Entity
       typeName = this.lastValue(paramType.split("."));
       if (typeName === "crmbaseentity") {
         typeName = "any";
+        if (structuralType === StructuralProperty.Collection) typeName += "[]";
       } else {
         // If complex type - it could still be an entity
         if (
@@ -400,7 +415,7 @@ export class SchemaModel {
         ({ outputType, typeName } = this.getOutputType(structuralType, typeName));
       }
     }
-    if (structuralType === StructuralProperty.Collection) typeName += "[]";
+
     const outputTypes: TypeScriptType[] = [];
     for (const item of typeName.split("|")) {
       const typeItem = {

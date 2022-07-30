@@ -6,7 +6,7 @@ import { <%-referencedTypes["OperationType"].name%> } from "<%-referencedTypes["
 // Action <%-Name%>
 export const <%-Name%>Metadata = {
   <%_ if (IsBound){ _%>
-  boundParameter: "entity",
+  boundParameter: "<%- locals.Parameters[0].Name %>",
   <%_}_%>
   parameterTypes: {
   <%_ locals.Parameters.forEach(function(param){ _%>
