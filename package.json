@@ -20,7 +20,7 @@
     "lint:fix": "npm run lint -- --fix",
     "coverage": "jest --coverage",
     "prepublishOnly": "npm version patch",
-    "preversion": "npm test",
+    "preversion": "npm run unit-test",
     "version": "genversion --es6 --semi --double src/version.ts & npm run build",
     "postversion": "git add . & git commit -m \"Version bump\" & git push"
   },
