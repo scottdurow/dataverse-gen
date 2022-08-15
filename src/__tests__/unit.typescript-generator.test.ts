@@ -70,15 +70,13 @@ describe("TypeScriptGenerator", () => {
     expect(lines[descLinePos + 1]).toContain("*/");
   });
 
-  it.todo("does not output Target on WhoAmI request");
-
   it.todo("filters based on publisher prefix");
 
   it("handles file columns", async () => {
     const defaultOptions = {
       entities: ["cdsify_integrationtest"],
-      actions: [],
-      functions: [],
+      actions: ["WinOpportunity"],
+      functions: ["RetrieveMetadataChanges", "WhoAmI"],
       output: {
         outputRoot: "./src/dataverse-gen",
       },
@@ -90,5 +88,37 @@ describe("TypeScriptGenerator", () => {
     expect(file).toBeDefined();
     // Check that the File attribute is of type string
     expect(file).toContain("cdsify_file1?: string | null;");
+  });
+
+  it("generates index.ts controlled by flag", async () => {
+    const defaultOptions = {
+      entities: ["cdsify_integrationtest"],
+      actions: [],
+      functions: [],
+      generateIndex: true,
+      output: {
+        outputRoot: "./src/dataverse-gen",
+      },
+    };
+    const model = await getModel(defaultOptions);
+
+    const files: Record<string, string> = await generateWithModel(defaultOptions, model);
+    const file = files["index.ts"];
+    expect(file).toBeDefined();
+    // Check that the File attribute is of type string
+    expect(file).toMatchInlineSnapshot(`
+      "/* eslint-disable*/
+      export { cdsify_integrationtestMetadata } from \\"./entities/cdsify_IntegrationTest\\";
+      export { cdsify_integrationtest } from \\"./entities/cdsify_IntegrationTest\\";
+      export { cdsify_integrationtest_cdsify_integrationtest_statecode } from \\"./enums/\\";
+      export { cdsify_integrationtest_cdsify_integrationtest_statuscode } from \\"./enums/\\";
+      "
+    `);
+
+    // Check that with the flag unset, there is no index
+    defaultOptions.generateIndex = false;
+    const filesNoIndex: Record<string, string> = await generateWithModel(defaultOptions, model);
+    const noFile = filesNoIndex["index.ts"];
+    expect(noFile).toBeUndefined();
   });
 });

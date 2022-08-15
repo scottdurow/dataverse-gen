@@ -1,17 +1,16 @@
-import config = require("config");
-import { NodeXrmConfig } from "dataverse-ify/lib/webapi/node";
+import { getServerConfig } from "dataverse-ify/lib/webapi/node";
 import { DataverseMetadataService } from "../MetadataService";
 import * as path from "path";
 import * as fs from "fs";
 import { NoLogging } from "./helpers";
 
 describe("MetadataService", () => {
-  const configFile = config.get("nodewebapi") as NodeXrmConfig;
+  const config = getServerConfig();
   const projectDir = path.resolve(".");
 
   it("downloads EMDX", async () => {
     const service = new DataverseMetadataService(NoLogging);
-    const server = configFile.server?.host as string;
+    const server = config.host as string;
     await service.authorize(server);
     const edmx = await service.getEdmxMetadata();
     expect(edmx).toBeDefined();
@@ -20,7 +19,7 @@ describe("MetadataService", () => {
 
   it("downloads entity metadata", async () => {
     const service = new DataverseMetadataService(NoLogging);
-    const server = configFile.server?.host as string;
+    const server = config.host as string;
     await service.authorize(server);
     const metadata = await service.getEntityMetadata("account");
     metadata.ServerVersionStamp = undefined;

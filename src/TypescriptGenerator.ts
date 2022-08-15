@@ -41,6 +41,11 @@ export class TypescriptGenerator {
     this.outputFiles("metadata.ejs", ".", [{ ...this.model, ...this.options }], function () {
       return "metadata";
     });
+    if (this.options.generateIndex) {
+      this.outputFiles("index.ejs", ".", [{ ...this.model, ...this.options }], function () {
+        return "index";
+      });
+    }
   }
 
   outputEntities(schema: SchemaModel): void {

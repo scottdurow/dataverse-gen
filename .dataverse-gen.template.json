@@ -2,6 +2,7 @@
     "entities":[],
     "actions":[],
     "functions":[],
+    "generateIndex": true,
     "output":{
         "outputRoot": "./src/dataverse-gen"
     }

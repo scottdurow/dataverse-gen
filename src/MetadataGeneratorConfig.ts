@@ -17,6 +17,7 @@ export interface DataverseGenOptions {
   actions?: string[];
   functions?: string[];
   output?: OutputConfig;
+  generateIndex?: boolean;
   referencedTypes?: Dictionary<ImportType>;
 }
 
@@ -66,6 +67,7 @@ export const defaultOptions = {
       import: "../entities/",
     },
   },
+  generateIndex: false,
   output: {
     useCache: false,
     outputRoot: "./src/dataverse-gen", // Default

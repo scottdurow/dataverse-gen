@@ -1,8 +1,3 @@
 nodewebapi:
- proxy:
-  useproxy: false
-  httpProxy: http://127.0.0.1:8888
-  httpsProxy: http://127.0.0.1:8888
  server:
-  host: https://org1bfe9950.api.crm3.dynamics.com
-  version: 9.1
+  version: 9.2
