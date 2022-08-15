@@ -12,6 +12,7 @@ export class TypescriptGenerator {
   model: SchemaModel;
   codeWriter: CodeWriter;
   templateProvider: TemplateProvider;
+  fileNames: string[] = [];
   logger: ILoggerCallback;
   constructor(
     model: SchemaModel,
@@ -33,6 +34,7 @@ export class TypescriptGenerator {
     if (!this.options.output?.templateRoot) throw new Error("Missing templateRoot in config");
     if (!this.options.output?.outputRoot) throw new Error("Missing outputRoot in config");
 
+    this.fileNames = [];
     this.outputEntities(this.model);
     this.outputEnums(this.model);
     this.outputActions(this.model);
@@ -42,9 +44,14 @@ export class TypescriptGenerator {
       return "metadata";
     });
     if (this.options.generateIndex) {
-      this.outputFiles("index.ejs", ".", [{ ...this.model, ...this.options }], function () {
-        return "index";
-      });
+      this.outputFiles(
+        "index.ejs",
+        ".",
+        [{ ...this.model, ...this.options, ...{ FileNames: this.fileNames } }],
+        function () {
+          return "index";
+        },
+      );
     }
   }
 
@@ -96,6 +103,7 @@ export class TypescriptGenerator {
         const template = this.templateProvider.getTemplate(templateFileName);
         if (template) {
           output = ejs.render(template, { ...this.options, ...item });
+          this.fileNames.push(outFile);
         } else {
           this.logger(`Skipping - no template found '${templateFileName}'`);
         }

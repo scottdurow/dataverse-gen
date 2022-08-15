@@ -108,10 +108,10 @@ describe("TypeScriptGenerator", () => {
     // Check that the File attribute is of type string
     expect(file).toMatchInlineSnapshot(`
       "/* eslint-disable*/
-      export { cdsify_integrationtestMetadata } from \\"./entities/cdsify_IntegrationTest\\";
-      export { cdsify_integrationtest } from \\"./entities/cdsify_IntegrationTest\\";
-      export { cdsify_integrationtest_cdsify_integrationtest_statecode } from \\"./enums/\\";
-      export { cdsify_integrationtest_cdsify_integrationtest_statuscode } from \\"./enums/\\";
+      export { * } from \\"./entities/cdsify_IntegrationTest\\";
+      export { * } from \\"./enums/cdsify_integrationtest_cdsify_integrationtest_statecode\\";
+      export { * } from \\"./enums/cdsify_integrationtest_cdsify_integrationtest_statuscode\\";
+      export { * } from \\"./metadata\\";
       "
     `);
 

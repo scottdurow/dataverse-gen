@@ -1,19 +1,4 @@
 /* eslint-disable*/
-<%_ EntityTypes.forEach(function(e){_%>
-export { <%-e.Name%>Metadata } from "./entities/<%-e.SchemaName%>";
-export { <%-e.Name%> } from "./entities/<%-e.SchemaName%>";
-<%_})_%>
-<%_ EnumTypes.forEach(function(e){_%>
-export { <%-e.Name%> } from "./enums/<%-e.SchemaName%>";
-<%_})_%>
-<%_ Actions.forEach(function(e){_%>
-export { <%-e.Name%>Metadata } from "./actions/<%-e.Name%>";
-export { <%-e.Name%>Request } from "./actions/<%-e.Name%>";
-<%_})_%>
-<%_ Functions.forEach(function(e){_%>
-export { <%-e.Name%>Metadata } from "./functions/<%-e.Name%>";
-export { <%-e.Name%> } from "./functions/<%-e.Name%>";
-<%_})_%>
-<%_ ComplexTypes.forEach(function(e){_%>
-export { <%-e.Name%> } from "./complextypes/<%-e.Name%>";
+<%_ FileNames.forEach(function(f){_%>
+export { * } from "./<%-f.replace('\\','/').replace('.ts','')%>";
 <%_})_%>
