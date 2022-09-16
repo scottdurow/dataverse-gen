@@ -136,7 +136,7 @@ async function generateNow(): Promise<boolean> {
 async function getSchema(metadataService: MetadataService) {
   const schema = new SchemaModel(metadataService);
   await schema.loadEdmxMetadata();
-  const entities = schema.EntityTypes.map((e) => e.Name);
+  const entities = schema.EntityTypes.filter((e) => e.EntitySetName).map((e) => e.Name);
   const actions = schema.Actions.map((e) => e.Name);
   const functions = schema.Functions.map((e) => e.Name);
   return { entities, actions, functions };

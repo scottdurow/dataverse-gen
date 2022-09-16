@@ -9,6 +9,7 @@
     "cSpell.words": [
         "authorise",
         "camelcase",
+        "cdsify",
         "complextype",
         "crmbaseentity",
         "crmmodelbaseentity",
@@ -22,10 +23,13 @@
         "Msal",
         "mscrm",
         "nodewebapi",
+        "opportunityclose",
         "ownerid",
         "Picklist",
         "postversion",
         "preversion",
+        "queueitem",
+        "sonarjs",
         "Uniqueidentifier"
     ]
 }

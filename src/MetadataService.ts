@@ -42,7 +42,7 @@ export class DataverseMetadataService implements MetadataService {
 
   async getEntityMetadata(logicalName: string): Promise<RetrieveMetadataChangesResponse> {
     if (this.entityMetadataCache[logicalName]) return this.entityMetadataCache[logicalName];
-    if (!this.client) throw "Not initialized";
+    if (!this.client) throw new Error("Not initialized");
     this.logger(`Fetching Dataverse metadata for ${logicalName}`);
     const metadataQuery = {
       logicalName: "RetrieveMetadataChanges",
@@ -109,7 +109,7 @@ export class DataverseMetadataService implements MetadataService {
         const request = this.webApi.requestImplementation;
         edmxString = (await request.send("GET", metadataUrl, {})).body as string;
       } else {
-        throw "webapi authorize not called";
+        throw new Error("webapi authorize not called");
       }
       if (useCache) {
         fs.writeFileSync(edmxCachePath, edmxString);

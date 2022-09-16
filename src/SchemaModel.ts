@@ -139,7 +139,7 @@ export class SchemaModel {
     for (const entity of this.EntityTypes) {
       const getMetadataResponse = await this.metadataService.getEntityMetadata(entity.Name);
       if (!getMetadataResponse.EntityMetadata || getMetadataResponse.EntityMetadata?.length === 0)
-        throw `Cannot find entity metadata for ${entity.Name}`;
+        throw new Error(`${entity.Name} is not a Dataverse entity, remove it from the .dataverse-gen.json`);
       const entityMetadata = getMetadataResponse.EntityMetadata[0] as ComplexEntityMetadata;
       if (!entityMetadata.LogicalName) continue;
       const entityType = this.entityTypeIndex[entityMetadata.LogicalName];

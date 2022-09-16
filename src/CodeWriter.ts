@@ -18,6 +18,10 @@ export class FileSystemCodeWriter implements CodeWriter {
       throw new Error("outputRoot required");
     }
 
+    // Check if the root folder exists
+    if (fs.existsSync(this.rootPath)) {
+      throw new Error(`Root source directory specified in .dataverse-gen.json '${this.rootPath}' does not exist`);
+    }
     this.createDir(this.rootPath);
   }
 

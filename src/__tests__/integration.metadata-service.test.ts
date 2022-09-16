@@ -49,5 +49,20 @@ describe("MetadataService", () => {
     const metadata5 = await service.getEntityMetadata("queueitem");
     metadata5.ServerVersionStamp = undefined;
     fs.writeFileSync(path.join(projectDir, "src/__tests__/data/queueitem-metadata.json"), JSON.stringify(metadata5));
+
+    const metadata6 = await service.getEntityMetadata("EntityMetadata");
+    metadata6.ServerVersionStamp = undefined;
+    fs.writeFileSync(
+      path.join(projectDir, "src/__tests__/data/EntityMetadata-metadata.json"),
+      JSON.stringify(metadata6),
+    );
   }, 1000000);
+
+  it("handles unknown entities", async () => {
+    const service = new DataverseMetadataService(NoLogging);
+    const server = config.host as string;
+    await service.authorize(server);
+    const entityMetadata = await service.getEntityMetadata("foo");
+    expect(entityMetadata.EntityMetadata).toHaveLength(0);
+  });
 });

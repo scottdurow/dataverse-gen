@@ -137,4 +137,20 @@ describe("SchemaModel", () => {
   it("sets entity set name", () => {
     expect(model.EntityTypes.find((a) => a.Name === "account")?.EntitySetName).toBe("accounts");
   });
+
+  it("handles non-logical name entities", async () => {
+    const defaultOptions = {
+      entities: ["EntityMetadata", "account"],
+      actions: [],
+      functions: [],
+    };
+    let error: Error | undefined = undefined;
+    try {
+      await getModel(defaultOptions);
+    } catch (ex) {
+      error = ex as Error;
+    }
+    expect(error).toBeDefined();
+    expect(error?.message).toBe("EntityMetadata is not a Dataverse entity, remove it from the .dataverse-gen.json");
+  });
 });
