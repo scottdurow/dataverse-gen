@@ -3,10 +3,6 @@ import { <%-referencedTypes["Entity"].name%> } from "<%-referencedTypes["Entity"
 
 // Entity <%- locals.SchemaName %> FormContext
 export interface <%- SchemaName %>FormContext extends Omit<Xrm.FormContext, 'getAttribute'> {
-    getAttribute(): Xrm.Attributes.Attribute[];
-    getAttribute<T extends Xrm.Attributes.Attribute>(attributeName: string): T;
-    getAttribute(attributeName: string): Xrm.Attributes.Attribute;
-    getAttribute(index: number): Xrm.Attributes.Attribute;
   <%locals.Properties && locals.Properties.forEach(function(property){ if(!property.AttributeOf && property.TypescriptType.name !== 'Guid') { _%>
   /**
     * <%- property.Description %>
