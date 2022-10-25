@@ -2,7 +2,6 @@
 import { RetrieveMetadataChangesMetadata } from "./functions/RetrieveMetadataChanges";
 
 export const Entities = {
-  Account: "account",
 };
 
 // Setup Metadata

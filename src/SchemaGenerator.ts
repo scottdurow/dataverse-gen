@@ -204,7 +204,6 @@ export class SchemaGenerator {
   }
   getParameterTypeScriptType(param: FunctionParameterType): TypeScriptType[] | undefined {
     let typeName: string;
-    let definitelyTypedFieldType: string | undefined;
     let outputType: TypeScriptTypes = TypeScriptTypes.primitive;
     let structuralType = this.getStructuralType(param);
     switch (param.Type) {
@@ -215,7 +214,6 @@ export class SchemaGenerator {
       case "Edm.Duration":
       case "Edm.Binary":
         typeName = "string";
-        definitelyTypedFieldType = "Xrm.Attributes.StringAttribute";
         break;
       case "Edm.Int16":
       case "Edm.Int32":
@@ -223,15 +221,12 @@ export class SchemaGenerator {
       case "Edm.Double":
       case "Edm.Decimal":
         typeName = "number";
-        definitelyTypedFieldType = "Xrm.Attributes.NumberAttribute";
         break;
       case "Edm.Boolean":
         typeName = "boolean";
-        definitelyTypedFieldType = "Xrm.Attributes.BooleanAttribute";
         break;
       case "Edm.DateTimeOffset":
         typeName = "Date";
-        definitelyTypedFieldType = "Xrm.Attributes.DateAttribute";
         break;
       default: {
         typeName = this.lastValue(param.Type.split("."));
@@ -251,17 +246,14 @@ export class SchemaGenerator {
             case StructuralProperty.EntityType:
               outputType = TypeScriptTypes.entityType;
               typeName = "EntityReference|" + this.resolveToEntityType(typeName);
-              definitelyTypedFieldType = "Xrm.Attributes.LookupAttribute";
               break;
             case StructuralProperty.Collection:
               outputType = TypeScriptTypes.entityType;
               typeName = "EntityReference[]|" + this.resolveToEntityType(typeName) + "[]";
-              definitelyTypedFieldType = "Xrm.Attributes.LookupAttribute";
               break;
             case StructuralProperty.EnumerationType:
               outputType = TypeScriptTypes.enumType;
               typeName = this.resolveToEnumType(typeName) as string;
-              definitelyTypedFieldType = "Xrm.Attributes.OptionSetAttribute";
               break;
             default:
               outputType = TypeScriptTypes.complexType;
@@ -282,7 +274,6 @@ export class SchemaGenerator {
       } as TypeScriptType;
       outputTypes.push(typeItem);
       param.structuralTypeName = this.structuralPropertyToString(structuralType);
-      param.definitelyTypedType = definitelyTypedFieldType;
     }
     return outputTypes;
   }
@@ -381,6 +372,7 @@ export class SchemaGenerator {
     const isMultiSelect = property.IsMultiSelect;
     const isCollection = this.isCollection(referencedType);
     const typeName = this.removeCollection(referencedType);
+    let definitelyTypedFieldType: string | undefined;
     let type = "any";
     /*
       BigIntType
@@ -411,11 +403,13 @@ export class SchemaGenerator {
     switch (typeName) {
       case "MultiSelectPicklistType":
         type = "number[]";
+        definitelyTypedFieldType = "Xrm.Attributes.OptionSetAttribute[]";
         break;
       case "PicklistType":
       case "StateType":
       case "StatusType":
         type = "number";
+        definitelyTypedFieldType = "Xrm.Attributes.OptionSetAttribute";
         break;
       case "Edm.Guid":
       case "UniqueidentifierType":
@@ -429,6 +423,7 @@ export class SchemaGenerator {
       case "MemoType":
       case "EntityNameType":
         type = "string";
+        definitelyTypedFieldType = "Xrm.Attributes.StringAttribute";
         break;
       case "Edm.Int16":
       case "Edm.Int32":
@@ -441,25 +436,31 @@ export class SchemaGenerator {
       case "DecimalType":
       case "MoneyType":
         type = "number";
+        definitelyTypedFieldType = "Xrm.Attributes.NumberAttribute";
         break;
       case "Edm.Boolean":
       case "BooleanType":
         type = "boolean";
+        definitelyTypedFieldType = "Xrm.Attributes.BooleanAttribute";
         break;
       case "Edm.DateTimeOffset":
       case "DateTimeType":
         type = "Date";
+        definitelyTypedFieldType = "Xrm.Attributes.DateAttribute";
         break;
       case "CustomerType":
       case "LookupType":
       case "OwnerType":
         type = "EntityReference";
+        definitelyTypedFieldType = "Xrm.Attributes.LookupAttribute";
         break;
       case "PartyListType":
         type = "ActivityParty[]";
+        definitelyTypedFieldType = "Xrm.Attributes.LookupAttribute";
         break;
       case "ManagedPropertyType":
         type = "number";
+        definitelyTypedFieldType = "Xrm.Attributes.NumberAttribute";
         break;
       default:
         {
@@ -493,6 +494,7 @@ export class SchemaGenerator {
       name: type,
       outputType: outputType,
       importLocation: this.resolveTypeToImportLocation(type, outputType),
+      definitelyTypedFieldType: property.IsEnum ? "Xrm.Attributes.OptionSetAttribute" : definitelyTypedFieldType
     } as TypeScriptType;
     return mappedType;
   }
