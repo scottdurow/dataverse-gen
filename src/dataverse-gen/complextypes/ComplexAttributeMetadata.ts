@@ -1,12 +1,14 @@
 /* eslint-disable*/
 export interface ComplexAttributeMetadata {
   SourceType?: number;
+  Settings?: import("../complextypes/EntitySetting").EntitySetting[];
   SchemaName?: string;
   RequiredLevel?: import("../complextypes/AttributeRequiredLevelManagedProperty").AttributeRequiredLevelManagedProperty;
   ModifiedOn?: Date;
   MetadataId?: import("dataverse-ify").Guid;
   LogicalName?: string;
   LinkedAttributeId?: import("dataverse-ify").Guid;
+  IsValidODataAttribute?: boolean;
   IsValidForUpdate?: boolean;
   IsValidForRead?: boolean;
   IsValidForGrid?: boolean;

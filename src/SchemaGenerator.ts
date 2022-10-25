@@ -196,6 +196,7 @@ export class SchemaGenerator {
           DisplayName: attribute.DisplayName?.UserLocalizedLabel ? attribute.DisplayName.UserLocalizedLabel.Label : "",
           Format: dateFormat,
           IsMultiSelect: mutliSelect,
+          AttributeOf: attribute.AttributeOf
         } as EntityTypeProperty;
         entityType.Properties.push(property);
       }
@@ -203,6 +204,7 @@ export class SchemaGenerator {
   }
   getParameterTypeScriptType(param: FunctionParameterType): TypeScriptType[] | undefined {
     let typeName: string;
+    let definitelyTypedFieldType: string | undefined;
     let outputType: TypeScriptTypes = TypeScriptTypes.primitive;
     let structuralType = this.getStructuralType(param);
     switch (param.Type) {
@@ -213,6 +215,7 @@ export class SchemaGenerator {
       case "Edm.Duration":
       case "Edm.Binary":
         typeName = "string";
+        definitelyTypedFieldType = "Xrm.Attributes.StringAttribute";
         break;
       case "Edm.Int16":
       case "Edm.Int32":
@@ -220,12 +223,15 @@ export class SchemaGenerator {
       case "Edm.Double":
       case "Edm.Decimal":
         typeName = "number";
+        definitelyTypedFieldType = "Xrm.Attributes.NumberAttribute";
         break;
       case "Edm.Boolean":
         typeName = "boolean";
+        definitelyTypedFieldType = "Xrm.Attributes.BooleanAttribute";
         break;
       case "Edm.DateTimeOffset":
         typeName = "Date";
+        definitelyTypedFieldType = "Xrm.Attributes.DateAttribute";
         break;
       default: {
         typeName = this.lastValue(param.Type.split("."));
@@ -245,14 +251,17 @@ export class SchemaGenerator {
             case StructuralProperty.EntityType:
               outputType = TypeScriptTypes.entityType;
               typeName = "EntityReference|" + this.resolveToEntityType(typeName);
+              definitelyTypedFieldType = "Xrm.Attributes.LookupAttribute";
               break;
             case StructuralProperty.Collection:
               outputType = TypeScriptTypes.entityType;
               typeName = "EntityReference[]|" + this.resolveToEntityType(typeName) + "[]";
+              definitelyTypedFieldType = "Xrm.Attributes.LookupAttribute";
               break;
             case StructuralProperty.EnumerationType:
               outputType = TypeScriptTypes.enumType;
               typeName = this.resolveToEnumType(typeName) as string;
+              definitelyTypedFieldType = "Xrm.Attributes.OptionSetAttribute";
               break;
             default:
               outputType = TypeScriptTypes.complexType;
@@ -269,10 +278,11 @@ export class SchemaGenerator {
       const typeItem = {
         name: item,
         outputType: outputType,
-        importLocation: this.resolveTypeToImportLocation(item, outputType),
+        importLocation: this.resolveTypeToImportLocation(item, outputType)
       } as TypeScriptType;
       outputTypes.push(typeItem);
       param.structuralTypeName = this.structuralPropertyToString(structuralType);
+      param.definitelyTypedType = definitelyTypedFieldType;
     }
     return outputTypes;
   }

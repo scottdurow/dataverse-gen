@@ -1,8 +1,10 @@
 {
-    "entities":[],
-    "actions":[],
-    "functions":["RetrieveMetadataChanges"],
-    "output":{
+    "entities": [],
+    "actions": [],
+    "functions": [
+        "RetrieveMetadataChanges"
+    ],
+    "output": {
         "outputRoot": "./src/dataverse-gen"
     }
 }

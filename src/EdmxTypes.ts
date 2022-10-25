@@ -86,6 +86,7 @@ export interface FunctionParameterType {
   TypescriptTypes?: TypeScriptType[];
   Name: string;
   Type: string;
+  definitelyTypedType?: string;
 }
 
 export interface FunctionType extends EdmxBase {
