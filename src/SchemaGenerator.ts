@@ -196,7 +196,8 @@ export class SchemaGenerator {
           DisplayName: attribute.DisplayName?.UserLocalizedLabel ? attribute.DisplayName.UserLocalizedLabel.Label : "",
           Format: dateFormat,
           IsMultiSelect: mutliSelect,
-          AttributeOf: attribute.AttributeOf
+          AttributeOf: attribute.AttributeOf,
+          SourceType: attribute.SourceType
         } as EntityTypeProperty;
         entityType.Properties.push(property);
       }
@@ -403,13 +404,13 @@ export class SchemaGenerator {
     switch (typeName) {
       case "MultiSelectPicklistType":
         type = "number[]";
-        definitelyTypedFieldType = "Xrm.Attributes.OptionSetAttribute[]";
+        definitelyTypedFieldType = "OptionSet";
         break;
       case "PicklistType":
       case "StateType":
       case "StatusType":
         type = "number";
-        definitelyTypedFieldType = "Xrm.Attributes.OptionSetAttribute";
+        definitelyTypedFieldType = "OptionSet";
         break;
       case "Edm.Guid":
       case "UniqueidentifierType":
@@ -423,7 +424,7 @@ export class SchemaGenerator {
       case "MemoType":
       case "EntityNameType":
         type = "string";
-        definitelyTypedFieldType = "Xrm.Attributes.StringAttribute";
+        definitelyTypedFieldType = "String";
         break;
       case "Edm.Int16":
       case "Edm.Int32":
@@ -436,31 +437,31 @@ export class SchemaGenerator {
       case "DecimalType":
       case "MoneyType":
         type = "number";
-        definitelyTypedFieldType = "Xrm.Attributes.NumberAttribute";
+        definitelyTypedFieldType = "Number";
         break;
       case "Edm.Boolean":
       case "BooleanType":
         type = "boolean";
-        definitelyTypedFieldType = "Xrm.Attributes.BooleanAttribute";
+        definitelyTypedFieldType = "Boolean";
         break;
       case "Edm.DateTimeOffset":
       case "DateTimeType":
         type = "Date";
-        definitelyTypedFieldType = "Xrm.Attributes.DateAttribute";
+        definitelyTypedFieldType = "Date";
         break;
       case "CustomerType":
       case "LookupType":
       case "OwnerType":
         type = "EntityReference";
-        definitelyTypedFieldType = "Xrm.Attributes.LookupAttribute";
+        definitelyTypedFieldType = "Lookup";
         break;
       case "PartyListType":
         type = "ActivityParty[]";
-        definitelyTypedFieldType = "Xrm.Attributes.LookupAttribute";
+        definitelyTypedFieldType = "Lookup";
         break;
       case "ManagedPropertyType":
         type = "number";
-        definitelyTypedFieldType = "Xrm.Attributes.NumberAttribute";
+        definitelyTypedFieldType = "Number";
         break;
       default:
         {
@@ -494,7 +495,8 @@ export class SchemaGenerator {
       name: type,
       outputType: outputType,
       importLocation: this.resolveTypeToImportLocation(type, outputType),
-      definitelyTypedFieldType: property.IsEnum ? "Xrm.Attributes.OptionSetAttribute" : definitelyTypedFieldType
+      definitelyTypedAttributeType: property.IsEnum ? "Xrm.Attributes.OptionSetAttribute" : `Xrm.Attributes.${definitelyTypedFieldType}Attribute`,
+      definitelyTypedControlType: property.IsEnum || property.Type == "BooleanType" ? "Xrm.Controls.OptionSetControl" : `Xrm.Controls.${definitelyTypedFieldType}Control`
     } as TypeScriptType;
     return mappedType;
   }

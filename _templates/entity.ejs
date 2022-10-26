@@ -2,12 +2,16 @@
 import { <%-referencedTypes["Entity"].name%> } from "<%-referencedTypes["Entity"].import%>";
 
 // Entity <%- locals.SchemaName %> FormContext
-export interface <%- SchemaName %>FormContext extends Omit<Xrm.FormContext, 'getAttribute'> {
-  <%locals.Properties && locals.Properties.forEach(function(property){ if(!property.AttributeOf && property.TypescriptType.name !== 'Guid') { _%>
+export interface <%- SchemaName %>FormContext extends Omit<Xrm.FormContext, 'getAttribute'|'getControl'> {
+  <%locals.Properties && locals.Properties.forEach(function(property){ if(!property.AttributeOf && property.SourceType === 0 && property.TypescriptType.name !== 'Guid') { _%>
   /**
     * <%- property.Description %>
     */
-    getAttribute(name: '<%- property.Name %>'): <%-property.TypescriptType.definitelyTypedFieldType%>;
+    getAttribute(name: '<%- property.Name %>'): <%-property.TypescriptType.definitelyTypedAttributeType%>;
+  /**
+  * <%- property.Description %>
+    */
+    getControl(name: '<%- property.Name %>'): <%-property.TypescriptType.definitelyTypedControlType%>;
   <%}})_%>
 }
 

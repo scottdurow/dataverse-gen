@@ -8,5 +8,6 @@ export interface TypeScriptType {
   name?: string;
   outputType?: TypeScriptTypes;
   importLocation?: string;
-  definitelyTypedFieldType?: string;
+  definitelyTypedAttributeType?: string;
+  definitelyTypedControlType?: string;
 }

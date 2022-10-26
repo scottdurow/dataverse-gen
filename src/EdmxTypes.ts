@@ -19,6 +19,8 @@ export interface EntityTypeProperty {
   DisplayName: string;
   Description: string;
   IsEnum: boolean;
+  AttributeOf?: string;
+  SourceType?: number;
 }
 
 export interface EntityTypeNavigationProperty {
