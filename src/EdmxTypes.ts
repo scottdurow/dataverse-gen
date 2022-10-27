@@ -19,6 +19,8 @@ export interface EntityTypeProperty {
   DisplayName: string;
   Description: string;
   IsEnum: boolean;
+  AttributeOf?: string;
+  SourceType?: number;
 }
 
 export interface EntityTypeNavigationProperty {
@@ -33,6 +35,7 @@ export interface EntityTypeNavigationProperty {
   IsCollection?: boolean;
   ReferentialConstraint?: string;
   ReferencedProperty?: string;
+  definitelyTypedType?: string;
 }
 
 export interface EntityType extends EdmxBase {

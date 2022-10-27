@@ -230,6 +230,8 @@ export class SchemaModel {
       DisplayName: attribute.DisplayName?.UserLocalizedLabel ? attribute.DisplayName.UserLocalizedLabel.Label : "",
       Format: dateFormat,
       IsMultiSelect: multiSelect,
+      AttributeOf: attribute.AttributeOf,
+      SourceType: attribute.SourceType
     } as EntityTypeProperty;
   }
 
@@ -435,6 +437,7 @@ export class SchemaModel {
     const isMultiSelect = property.IsMultiSelect;
     const isCollection = this.isCollection(referencedType);
     const typeName = this.removeCollection(referencedType);
+    let definitelyTypedFieldType: string | undefined;
     let type = "any";
 
     switch (typeName) {
@@ -445,6 +448,7 @@ export class SchemaModel {
       case "StateType":
       case "StatusType":
         type = "number";
+        definitelyTypedFieldType = "OptionSet";
         break;
       case "Edm.Guid":
       case "UniqueidentifierType":
@@ -459,6 +463,7 @@ export class SchemaModel {
       case "MemoType":
       case "EntityNameType":
         type = "string";
+        definitelyTypedFieldType = "String";
         break;
       case "Edm.Int16":
       case "Edm.Int32":
@@ -471,22 +476,27 @@ export class SchemaModel {
       case "DecimalType":
       case "MoneyType":
         type = "number";
+        definitelyTypedFieldType = "Number";
         break;
       case "Edm.Boolean":
       case "BooleanType":
         type = "boolean";
+        definitelyTypedFieldType = "Boolean";
         break;
       case "Edm.DateTimeOffset":
       case "DateTimeType":
         type = "Date";
+        definitelyTypedFieldType = "Date"
         break;
       case "CustomerType":
       case "LookupType":
       case "OwnerType":
         type = "EntityReference";
+        definitelyTypedFieldType = "Lookup";
         break;
       case "PartyListType":
         type = "ActivityParty[]";
+        definitelyTypedFieldType = "OptionSet";
         break;
       case "ManagedPropertyType":
         type = "number";
@@ -530,6 +540,8 @@ export class SchemaModel {
       name: type,
       outputType: outputType,
       importLocation: this.resolveTypeToImportLocation(type, outputType),
+      definitelyTypedAttributeType: property.IsEnum ? "Xrm.Attributes.OptionSetAttribute" : `Xrm.Attributes.${definitelyTypedFieldType}Attribute`,
+      definitelyTypedControlType: property.IsEnum || property.Type == "BooleanType" ? "Xrm.Controls.OptionSetControl" : `Xrm.Controls.${definitelyTypedFieldType}Control`
     } as TypeScriptType;
   }
 
