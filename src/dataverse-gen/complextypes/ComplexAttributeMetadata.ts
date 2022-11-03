@@ -40,6 +40,7 @@ export interface ComplexAttributeMetadata {
   IsValidForGrid?: boolean;
   IsValidForRead?: boolean;
   IsValidForUpdate?: boolean;
+  IsValidODataAttribute?: boolean;
   LinkedAttributeId?: import("dataverse-ify").Guid;
   LogicalName?: string;
   MetadataId?: import("dataverse-ify").Guid;

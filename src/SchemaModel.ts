@@ -231,7 +231,7 @@ export class SchemaModel {
       Format: dateFormat,
       IsMultiSelect: multiSelect,
       AttributeOf: attribute.AttributeOf,
-      SourceType: attribute.SourceType
+      SourceType: attribute.SourceType,
     } as EntityTypeProperty;
   }
 
@@ -486,7 +486,7 @@ export class SchemaModel {
       case "Edm.DateTimeOffset":
       case "DateTimeType":
         type = "Date";
-        definitelyTypedFieldType = "Date"
+        definitelyTypedFieldType = "Date";
         break;
       case "CustomerType":
       case "LookupType":
@@ -540,8 +540,13 @@ export class SchemaModel {
       name: type,
       outputType: outputType,
       importLocation: this.resolveTypeToImportLocation(type, outputType),
-      definitelyTypedAttributeType: property.IsEnum ? "Xrm.Attributes.OptionSetAttribute" : `Xrm.Attributes.${definitelyTypedFieldType}Attribute`,
-      definitelyTypedControlType: property.IsEnum || property.Type == "BooleanType" ? "Xrm.Controls.OptionSetControl" : `Xrm.Controls.${definitelyTypedFieldType}Control`
+      definitelyTypedAttributeType: property.IsEnum
+        ? "Xrm.Attributes.OptionSetAttribute"
+        : `Xrm.Attributes.${definitelyTypedFieldType}Attribute`,
+      definitelyTypedControlType:
+        property.IsEnum || property.Type === "BooleanType"
+          ? "Xrm.Controls.OptionSetControl"
+          : `Xrm.Controls.${definitelyTypedFieldType}Control`,
     } as TypeScriptType;
   }
 

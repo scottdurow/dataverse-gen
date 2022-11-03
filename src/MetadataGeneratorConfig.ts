@@ -18,6 +18,7 @@ export interface DataverseGenOptions {
   functions?: string[];
   output?: OutputConfig;
   generateIndex?: boolean;
+  generateFormContext?: boolean;
   referencedTypes?: Dictionary<ImportType>;
 }
 

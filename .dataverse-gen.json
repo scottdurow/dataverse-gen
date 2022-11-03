@@ -7,5 +7,7 @@
   ],
   "output": {
     "outputRoot": "./src/dataverse-gen"
-  }
+  },
+  "generateIndex": false,
+  "generateFormContext": false
 }
