@@ -69,6 +69,7 @@ export const defaultOptions = {
     },
   },
   generateIndex: false,
+  generateFormContext: false,
   output: {
     useCache: false,
     outputRoot: "./src/dataverse-gen", // Default
