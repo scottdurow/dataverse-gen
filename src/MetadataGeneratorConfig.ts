@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import { Dictionary } from "dataverse-ify";
 
 export interface OutputConfig {
@@ -16,6 +17,8 @@ export interface DataverseGenOptions {
   actions?: string[];
   functions?: string[];
   output?: OutputConfig;
+  generateIndex?: boolean;
+  generateFormContext?: boolean;
   referencedTypes?: Dictionary<ImportType>;
 }
 
@@ -65,6 +68,8 @@ export const defaultOptions = {
       import: "../entities/",
     },
   },
+  generateIndex: false,
+  generateFormContext: false,
   output: {
     useCache: false,
     outputRoot: "./src/dataverse-gen", // Default

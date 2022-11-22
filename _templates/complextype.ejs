@@ -3,4 +3,7 @@ export interface <%- locals.Name %> {
 <%_locals.Properties.forEach(function(property){ _%>
   <%- property.Name %>?: <%-property.TypescriptType.importLocation && `import("${property.TypescriptType.importLocation}").`%><%-property.TypescriptType.name%>;
 <%_})_%>
+<%_locals.NavigationProperties.forEach(function(property){ _%>
+  <%- property.Name %>?: <%-property.TypescriptType.importLocation && `import("${property.TypescriptType.importLocation}").`%><%-property.TypescriptType.name%>;
+<%_})_%>
 }

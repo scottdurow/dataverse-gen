@@ -1,5 +1,32 @@
 /* eslint-disable*/
 import { <%-referencedTypes["Entity"].name%> } from "<%-referencedTypes["Entity"].import%>";
+<%_ if (generateFormContext){ _%>
+
+// Entity <%- locals.SchemaName %> FormContext
+export interface <%- SchemaName %>FormContext extends Xrm.FormContext {
+    getAttribute(): Xrm.Attributes.Attribute[];
+    getAttribute<T extends Xrm.Attributes.Attribute>(attributeName: string): T;
+    getAttribute(attributeName: string): Xrm.Attributes.Attribute;
+    getAttribute(index: number): Xrm.Attributes.Attribute;
+
+    getControl(): Xrm.Controls.Control[];
+    getControl<T extends Xrm.Controls.Control>(controlName: string): T;
+    getControl(controlName: string): Xrm.Controls.Control;
+    getControl(index: number): Xrm.Controls.Control;
+
+<%locals.Properties && locals.Properties.forEach(function(property){ if(!property.AttributeOf && property.SourceType === 0 && property.TypescriptType.name !== 'Guid' && property.TypescriptType.definitelyTypedAttributeType) { _%>
+    /*
+    <%- property.Description %>
+    */
+    getAttribute(name: '<%- property.Name %>'): <%-property.TypescriptType.definitelyTypedAttributeType%>;
+    /*
+    <%- property.Description %>
+    */
+    getControl(name: '<%- property.Name %>'): <%-property.TypescriptType.definitelyTypedControlType%>;
+<%}})_%>
+}
+<%_}_%>
+
 // Entity <%- locals.SchemaName %>
 export const <%- Name %>Metadata = {
   typeName: "mscrm.<%- Name %>",
@@ -37,7 +64,9 @@ export const enum <%- locals.SchemaName %>Attributes {
 // Early Bound Interface
 export interface <%- locals.SchemaName ? locals.SchemaName : Name %> extends <%-referencedTypes["Entity"].name%> {
 <%locals.Properties && locals.Properties.forEach(function(property){ _%>
-  // <%- property.DisplayName ? property.DisplayName : "" %><%- property.IsRequired == true ? " [Required]" : "" %><%- property.Type ? (" " + property.Type) : "" %><%- property.Description ? (" " + property.Description) :"" %><%- property.Format ? (" " + property.Format) : "" %>
+  /*
+  <%- property.DisplayName ? property.DisplayName : "" %><%- property.IsRequired == true ? " [Required]" : "" %><%- property.Type ? (" " + property.Type) : "" %><%- property.Description ? (" " + property.Description) :"" %><%- property.Format ? (" " + property.Format) : "" %>
+  */
   <%- property.Name %>?: <%-property.TypescriptType.importLocation && `import("${property.TypescriptType.importLocation}").`%><%- property.TypescriptType.name %><%- property.IsRequired == true ? "" : " | null" %>;
 <%})_%>
 }

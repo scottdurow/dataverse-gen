@@ -1,12 +1,13 @@
 /* eslint-disable*/
 import { <%-referencedTypes["WebApiExecuteRequest"].name%> } from "<%-referencedTypes["WebApiExecuteRequest"].import%>";
-import { <%-referencedTypes["StructuralProperty"].name%> } from "<%-referencedTypes["StructuralProperty"].import%>";
+<%_ if (locals.Parameters.length>0) { _%>import { <%-referencedTypes["StructuralProperty"].name%> } from "<%-referencedTypes["StructuralProperty"].import%>";
+<%_}_%>
 import { <%-referencedTypes["OperationType"].name%> } from "<%-referencedTypes["OperationType"].import%>";
 
 // Action <%-Name%>
 export const <%-Name%>Metadata = {
   <%_ if (IsBound){ _%>
-  boundParameter: "entity",
+  boundParameter: "<%- locals.Parameters[0].Name %>",
   <%_}_%>
   parameterTypes: {
   <%_ locals.Parameters.forEach(function(param){ _%>

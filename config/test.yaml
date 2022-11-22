@@ -1,0 +1,3 @@
+nodewebapi:
+ server:
+  version: 9.2

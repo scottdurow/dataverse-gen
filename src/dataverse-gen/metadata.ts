@@ -1,5 +1,6 @@
 /* eslint-disable*/
 import { RetrieveMetadataChangesMetadata } from "./functions/RetrieveMetadataChanges";
+import { WhoAmIMetadata } from "./functions/WhoAmI";
 
 export const Entities = {
 };
@@ -11,5 +12,6 @@ export const metadataCache = {
   },
   actions: {
     RetrieveMetadataChanges: RetrieveMetadataChangesMetadata,
+    WhoAmI: WhoAmIMetadata,
   }
 };

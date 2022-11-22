@@ -2,6 +2,8 @@
     "entities":[],
     "actions":[],
     "functions":[],
+    "generateIndex": true,
+    "generateFormContext": false,
     "output":{
         "outputRoot": "./src/dataverse-gen"
     }
