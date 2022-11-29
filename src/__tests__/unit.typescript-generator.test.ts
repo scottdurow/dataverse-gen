@@ -4,6 +4,7 @@ import { CodeWriter } from "../CodeWriter";
 import { TemplateProvider } from "../TemplateProvider";
 import { EntityType } from "../EdmxTypes";
 import { generateWithModel, getModel } from "./helpers";
+import { DataverseGenOptions } from "../MetadataGeneratorConfig";
 
 describe("TypeScriptGenerator", () => {
   it("generates code", async () => {
@@ -14,6 +15,7 @@ describe("TypeScriptGenerator", () => {
       output: {
         outputRoot: "./src/dataverse-gen",
       },
+      generateIndex: false, // On by default now, so turn off for this test
     };
 
     const model = await getModel(defaultOptions);
@@ -39,13 +41,14 @@ describe("TypeScriptGenerator", () => {
   });
 
   it("handles newlines in attribute description", async () => {
-    const defaultOptions = {
+    const defaultOptions: DataverseGenOptions = {
       entities: ["account", "opportunity"],
       actions: ["WinOpportunity"],
       functions: ["RetrieveMetadataChanges", "WhoAmI"],
       output: {
         outputRoot: "./src/dataverse-gen",
       },
+      generateIndex: false, // On by default now, so turn off for this test
     };
     const model = await getModel(defaultOptions);
 
