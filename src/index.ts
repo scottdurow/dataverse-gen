@@ -22,12 +22,10 @@ function readConfig(): DataverseGenOptions {
   const configPath = path.join(projectDir, configFileName);
   const config: DataverseGenOptions = {};
   if (fs.existsSync(configPath)) {
-    console.log(chalk.gray("Loading config: " + configPath));
+    console.log(chalk.white("Loading config: " + configPath));
     const configJSON = fs.readFileSync(configPath).toString();
     const config: DataverseGenOptions = JSON.parse(configJSON) as DataverseGenOptions;
-    console.log(`${chalk.cyanBright(config.entities?.length ?? 0)} entities(s)`);
-    console.log(`${chalk.cyanBright(config.actions?.length ?? 0)} actions(s)`);
-    console.log(`${chalk.cyanBright(config.functions?.length ?? 0)} functions(s)`);
+    console.log(`${chalk.white.dim(JSON.stringify(config))}`);
     return config;
   }
 
@@ -54,11 +52,9 @@ function saveConfig(
   } else {
     console.log(chalk.yellow("No items added to configuration"));
   }
-
-  if (updateMade) {
-    const configPath = path.join(projectDir, configFileName);
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
-  }
+  // Always update file to add options
+  const configPath = path.join(projectDir, configFileName);
+  fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 }
 
 function help(): void {
@@ -91,13 +87,21 @@ async function init(): Promise<void> {
 }
 
 async function updateConfig(currentConfig: DataverseGenOptions, metadataService: MetadataService) {
-  const responses = await chooseTypesToGenerate(metadataService, currentConfig);
-
+  await chooseOptions(currentConfig);
   const updates = {
     entities: 0,
     actions: 0,
     functions: 0,
   };
+
+  if (!currentConfig.generateEntityTypes && !currentConfig.generateFormContext) {
+    currentConfig.entities = [];
+    currentConfig.actions = [];
+    currentConfig.functions = [];
+    return updates;
+  }
+
+  const responses = await chooseTypesToGenerate(metadataService, currentConfig);
 
   // Set entities
   for (const entity of responses.entities) {
@@ -185,6 +189,24 @@ async function chooseTypesToGenerate(metadataService: MetadataService, config: D
       initial: config.functions,
     },
   ] as never);
+}
+
+async function chooseOptions(currentConfig: DataverseGenOptions): Promise<void> {
+  const option = await Enquirer.prompt<DataverseGenOptions>([
+    {
+      name: "generateFormContext",
+      type: "confirm",
+      message: "Generate form context helpers?",
+    },
+    {
+      name: "generateEntityTypes",
+      type: "confirm",
+      message: "Generate dataverse-ify entity types?",
+    },
+  ]);
+
+  currentConfig.generateFormContext = option.generateFormContext === true;
+  currentConfig.generateEntityTypes = option.generateEntityTypes === true;
 }
 
 function initDataverseGenConfig(pathToOutput: string, pathToTemplate: string) {

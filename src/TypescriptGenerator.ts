@@ -91,6 +91,11 @@ export class TypescriptGenerator {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getFileName: (item: any) => string,
   ): void {
+    if (itemArray.length === 0) {
+      this.logger(`Skipping ${outputDir} due to zero items`);
+      return;
+    }
+
     // Create sub-output directory
     this.codeWriter.createSubFolder(outputDir);
 

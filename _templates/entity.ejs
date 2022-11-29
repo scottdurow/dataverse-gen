@@ -1,5 +1,7 @@
 /* eslint-disable*/
+<%_ if (generateEntityTypes){ _%>
 import { <%-referencedTypes["Entity"].name%> } from "<%-referencedTypes["Entity"].import%>";
+<%_}_%>
 <%_ if (generateFormContext){ _%>
 
 // Entity <%- locals.SchemaName %> FormContext
@@ -26,7 +28,6 @@ export interface <%- SchemaName %>FormContext extends Xrm.FormContext {
 <%}})_%>
 }
 <%_}_%>
-
 // Entity <%- locals.SchemaName %>
 export const <%- Name %>Metadata = {
   typeName: "mscrm.<%- Name %>",
@@ -60,7 +61,7 @@ export const enum <%- locals.SchemaName %>Attributes {
   <%- property.SchemaName %> = "<%- property.Name %>",
 <%})_%>
 }
-
+<%_ if (generateEntityTypes){ _%>
 // Early Bound Interface
 export interface <%- locals.SchemaName ? locals.SchemaName : Name %> extends <%-referencedTypes["Entity"].name%> {
 <%locals.Properties && locals.Properties.forEach(function(property){ _%>
@@ -70,3 +71,4 @@ export interface <%- locals.SchemaName ? locals.SchemaName : Name %> extends <%-
   <%- property.Name %>?: <%-property.TypescriptType.importLocation && `import("${property.TypescriptType.importLocation}").`%><%- property.TypescriptType.name %><%- property.IsRequired == true ? "" : " | null" %>;
 <%})_%>
 }
+<%_}_%>

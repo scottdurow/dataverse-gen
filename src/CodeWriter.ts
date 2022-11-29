@@ -17,12 +17,11 @@ export class FileSystemCodeWriter implements CodeWriter {
     } else {
       throw new Error("outputRoot required");
     }
-
+    createDir(this.rootPath);
     // Check if the root folder exists
     if (!fs.existsSync(this.rootPath)) {
       throw new Error(`Root source directory specified in .dataverse-gen.json '${this.rootPath}' does not exist`);
     }
-    this.createDir(this.rootPath);
   }
 
   write(outFile: string, output: string) {
@@ -30,18 +29,18 @@ export class FileSystemCodeWriter implements CodeWriter {
     fs.writeFileSync(outPath, output);
   }
 
-  createDir(dirPath: string): void {
-    try {
-      fs.mkdirSync(dirPath);
-    } catch (ex) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((ex as any).code !== "EEXIST") {
-        throw ex;
-      }
-    }
-  }
-
   createSubFolder(outputDirectory: string): void {
-    this.createDir(path.join(this.rootPath, outputDirectory));
+    createDir(path.join(this.rootPath, outputDirectory));
+  }
+}
+
+export function createDir(dirPath: string): void {
+  try {
+    fs.mkdirSync(dirPath);
+  } catch (ex) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((ex as any).code !== "EEXIST") {
+      throw ex;
+    }
   }
 }
