@@ -22,7 +22,7 @@ export class DataverseGenArgs {
   }
 
   public outputHelp() {
-    console.log("Usage: npx dataverse-get [command] [-u] [-t] [-a] [-cs]");
+    console.log("Usage: npx dataverse-gen [command] [-u] [-t] [-a] [-cs]");
     console.log("  dataverse-gen : Generates from an existing .dataverse-gen.json file");
     console.log("  dataverse-gen init  : Adds .dataverse-gen.json config file to your project");
     console.log("  dataverse-gen eject : Adds the templates to your project to allow you to customize them!");
