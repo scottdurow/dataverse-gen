@@ -27,13 +27,17 @@ export class DataverseMetadataService implements MetadataService {
     this.logger = logger || DefaultLogger;
   }
 
-  async authorize(server: string) {
+  async authorize(server: string, tenant?: string, appid?: string, secret?: string) {
     // Clear cache
     this.edmx = undefined;
     this.entityMetadataCache = {};
     this.server = server;
     this.webApi = new NodeWebApi(server);
-    await this.webApi.authorize();
+    if (appid && tenant && secret) {
+      await this.webApi.authorizeWithSecret(tenant, appid, secret);
+    } else {
+      await this.webApi.authorize();
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.client = new XrmContextDataverseClient(this.webApi as any as Xrm.WebApi);
     // Set Metadata

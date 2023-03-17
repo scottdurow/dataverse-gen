@@ -5,9 +5,9 @@ import * as chalk from "chalk";
 import { getAllUsers } from "dataverse-ify/lib/webapi/node/MsalAuth";
 import * as Enquirer from "enquirer";
 import * as fs from "fs-extra";
-import * as minimist from "minimist";
 import * as path from "path";
 import { FileSystemCodeWriter } from "./CodeWriter";
+import { DataverseGenArgs, DataverseGenCommands } from "./DataverseGenArgs";
 import { DataverseGenOptions } from "./MetadataGeneratorConfig";
 import { DataverseMetadataService, MetadataService } from "./MetadataService";
 import { SchemaModel } from "./SchemaModel";
@@ -57,32 +57,38 @@ function saveConfig(
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 }
 
-function help(): void {
-  console.log("  dataverse-gen init  : Adds .dataverse-gen.json config file to your project");
-  console.log("  dataverse-gen eject : Adds the templates to your project to allow you to customize them!");
+async function GetMetadataService(args: DataverseGenArgs): Promise<DataverseMetadataService> {
+  const metadataService = new DataverseMetadataService();
+  if (args.environmentUrl && args.applicationId && args.tenantId && args.clientSecret) {
+    console.log(chalk.yellow("Using Client Secret Auth"));
+    await metadataService.authorize(args.environmentUrl, args.tenantId, args.applicationId, args.clientSecret);
+  } else if (args.environmentUrl) {
+    await metadataService.authorize(args.environmentUrl);
+  } else {
+    const server = await selectServer();
+    args.environmentUrl = "https://" + server;
+    await metadataService.authorize(args.environmentUrl);
+  }
+  return metadataService;
 }
 
-async function init(): Promise<void> {
+async function init(args: DataverseGenArgs): Promise<void> {
   const pathToTemplate = path.resolve(packageDir, "../.dataverse-gen.template.json");
   const pathToOutput = path.resolve(projectDir, configFileName);
 
   initDataverseGenConfig(pathToOutput, pathToTemplate);
 
-  const server = await selectServer();
-  if (server) {
-    // Load EDMX
-    const metadataService = new DataverseMetadataService();
-    await metadataService.authorize("https://" + server);
+  // Load EDMX
+  const metadataService = await GetMetadataService(args);
 
-    // Load existing config (if there is one)
-    const currentConfig = readConfig();
-    const updates = await updateConfig(currentConfig, metadataService);
+  // Load existing config (if there is one)
+  const currentConfig = readConfig();
+  const updates = await updateConfig(currentConfig, metadataService);
 
-    saveConfig(currentConfig, updates);
+  saveConfig(currentConfig, updates);
 
-    if (await generateNow()) {
-      await generate(server);
-    }
+  if (await generateNow()) {
+    await generate(args);
   }
 }
 
@@ -230,19 +236,15 @@ function eject(): void {
   fs.copySync(source, target);
 }
 
-async function generate(server?: string): Promise<void> {
-  const selectedServer = server || (await selectServer());
+async function generate(args: DataverseGenArgs): Promise<void> {
+  const metadataService = args.connectedService || (await GetMetadataService(args));
   const config: DataverseGenOptions = readConfig();
-  if (selectedServer) {
-    const metadataService = new DataverseMetadataService();
-    await metadataService.authorize("https://" + selectedServer);
-    const codeWriter = new FileSystemCodeWriter(config);
-    const templateProvider = new FileSystemTemplateProvider(config);
-    const model = new SchemaModel(metadataService, config);
-    await model.generate();
-    const codeGenerator = new TypescriptGenerator(model, codeWriter, templateProvider, config);
-    await codeGenerator.generate();
-  }
+  const codeWriter = new FileSystemCodeWriter(config);
+  const templateProvider = new FileSystemTemplateProvider(config);
+  const model = new SchemaModel(metadataService, config);
+  await model.generate();
+  const codeGenerator = new TypescriptGenerator(model, codeWriter, templateProvider, config);
+  await codeGenerator.generate();
 }
 
 async function selectServer(): Promise<string | undefined> {
@@ -296,23 +298,19 @@ async function main(): Promise<void> {
   console.log(`dataverse-gen v${version}`);
   console.log(chalk.gray("Running from package:" + packageDir));
 
-  const args = minimist(process.argv.slice(2));
-  // Check command arg
-  const mainArg = args._ && args._[0];
-  switch (mainArg) {
-    case "help":
-    case "h":
-    case "?":
-      help();
+  const args = new DataverseGenArgs(process.argv.slice(2));
+  switch (args.command) {
+    case DataverseGenCommands.Help:
+      args.outputHelp();
       break;
-    case "init":
-      await init();
+    case DataverseGenCommands.Init:
+      await init(args);
       break;
-    case "eject":
+    case DataverseGenCommands.Eject:
       eject();
       break;
     default:
-      await generate(args.s);
+      await generate(args);
       break;
   }
 }
@@ -322,8 +320,10 @@ main().then(
     console.log(chalk.green("\nComplete!"));
   },
   (ex) => {
-    if (ex.message) {
-      console.log(chalk.red(`\nError:${ex.message}`));
+    const message = ex.message || ex;
+
+    console.log(chalk.red(`\nError:${message}`));
+    if (ex.stack) {
       console.log(`Stack:${ex.stack}`);
       console.log(JSON.stringify(ex));
     }

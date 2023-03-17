@@ -2,11 +2,12 @@ import * as fs from "fs";
 import * as path from "path";
 import { CodeWriter } from "../CodeWriter";
 import { DataverseGenOptions } from "../MetadataGeneratorConfig";
-import { MetadataService } from "../MetadataService";
+import { DataverseMetadataService, MetadataService } from "../MetadataService";
 import { SchemaModel } from "../SchemaModel";
 import { FileSystemTemplateProvider } from "../TemplateProvider";
 import { TypescriptGenerator } from "../TypescriptGenerator";
 import { ILoggerCallback } from "../Logger";
+import { getServerConfig } from "dataverse-ify/lib/webapi/node";
 
 export async function getModel(options: DataverseGenOptions) {
   const projectDir = path.resolve(".");
@@ -46,3 +47,10 @@ export async function generateWithModel(defaultOptions: DataverseGenOptions, mod
 export const NoLogging: ILoggerCallback = () => {
   //noop
 };
+
+export async function getAuthorizedMetadataService() {
+  const config = getServerConfig();
+  const service = new DataverseMetadataService(NoLogging);
+  await service.authorize(config.host, config.tenant, config.appid, config.secret);
+  return service;
+}

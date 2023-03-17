@@ -1,15 +1,11 @@
-import { getServerConfig } from "dataverse-ify/lib/webapi/node";
 import { DataverseMetadataService } from "../MetadataService";
 import { SchemaModel } from "../SchemaModel";
-import { NoLogging } from "./helpers";
+import { getAuthorizedMetadataService } from "./helpers";
 
 describe("SchemaModel", () => {
-  const config = getServerConfig();
   let service: DataverseMetadataService;
   beforeAll(async () => {
-    const server = config.host as string;
-    service = new DataverseMetadataService(NoLogging);
-    await service.authorize(server);
+    service = await getAuthorizedMetadataService();
     await service.getEdmxMetadata();
   }, 100000);
 

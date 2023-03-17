@@ -9,5 +9,6 @@
     "outputRoot": "./src/dataverse-gen"
   },
   "generateIndex": false,
-  "generateFormContext": false
+  "generateFormContext": false,
+  "generateEntityTypes": true
 }
