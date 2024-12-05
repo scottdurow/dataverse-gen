@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-use-before-define */
 process.env.SUPPRESS_NO_CONFIG_WARNING = "true";
-import * as chalk from "chalk";
+import chalk from "chalk";
 import { getAllUsers } from "dataverse-ify/lib/webapi/node/MsalAuth";
-import * as Enquirer from "enquirer";
+import Enquirer from "enquirer";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { FileSystemCodeWriter } from "./CodeWriter";
