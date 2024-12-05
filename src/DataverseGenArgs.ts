@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import * as minimist from "minimist";
+import minimist from "minimist";
 import { DataverseMetadataService } from "./MetadataService";
 export enum DataverseGenCommands {
   Init = "init",
