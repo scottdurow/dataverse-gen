@@ -22,6 +22,6 @@ describe("SchemaModel", () => {
     expect(model.EntityTypes.length).toBe(5);
     expect(model.Actions.length).toBe(1);
     expect(model.Functions.length).toBe(2);
-    expect(model.EnumTypes.length).toBe(65);
+    expect(model.EnumTypes.length).toBe(66);
   }, 100000);
 });

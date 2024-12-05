@@ -37,7 +37,7 @@ describe("TypeScriptGenerator", () => {
     } as TemplateProvider;
     const codeGenerator = new TypescriptGenerator(model, codeWriter, templateProvider, defaultOptions, jest.fn());
     await codeGenerator.generate();
-    expect(codeWriter.write).toBeCalledTimes(95);
+    expect(codeWriter.write).toBeCalledTimes(96);
   });
 
   it("handles newlines in attribute description", async () => {

@@ -77,7 +77,7 @@ describe("SchemaModel", () => {
     const account = model.EntityTypes.find((e) => e.Name === "account");
     expect(account?.Properties).toBeDefined();
     if (account?.Properties) {
-      expect(account?.Properties.length).toBe(164);
+      expect(account?.Properties.length).toBe(170);
       expect(account?.Properties[0].Name).toBe("_cdsify_account1_value");
       expect(account?.Properties[account?.Properties.length - 1].Name).toBe("yominame");
     }
